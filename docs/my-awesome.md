@@ -25,4 +25,3 @@ The ultimate loader.
 ## [jspm](https://jspm.io/)
 
 Honorable mentions.
-
