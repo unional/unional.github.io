@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Unional Blog Blog</title>
+        <link>https://unional.github.io/blog</link>
+        <description>Unional Blog Blog</description>
+        <lastBuildDate>Sun, 21 Mar 2021 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[What is Functional Programming]]></title>
+            <link>https://unional.github.io/blog/what-is-fp</link>
+            <guid>what-is-fp</guid>
+            <pubDate>Sun, 21 Mar 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Recently I have been working on just-func.]]></description>
+        </item>
+    </channel>
+</rss>

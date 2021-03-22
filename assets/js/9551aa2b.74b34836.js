@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{87:function(t){t.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"What is Functional Programming","permalink":"/blog/what-is-fp"}]}')}}]);
