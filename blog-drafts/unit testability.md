@@ -2,7 +2,7 @@
 
 The only thing get in the way between your code and unit testable code is dependency management.
 
-## What is dependency
+## What is a dependency
 
 Two types of dependencies:
 Source Code Dependency and Runtime Dependency

@@ -8,40 +8,45 @@ author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
 tags: [functional programming, just-func]
 ---
 
+I have been promoting and migrating from Object Oriented Programming to Functional Programing for many years, and I loved it.
+
+But just like everything,
+the more you dig into it, the more you realize what you do not know.
+
 Recently I have been working on [`just-func`](https://github.com/justland/just-func).
 
 I want to design it to be a homoiconic, functional programming language.
 
-As with everything,
-when you try to create something is the time you understand how little you know.
-
-This time, it is about functional programming.
-
-What exactly is functional programming?
+But when I put my finger to it,
+I start wondering what exactly is functional programming.
 
 When people talk about functional programming,
-the first thing that comes to mind is the languages: Lisp, Haskell, F#, Clojure, etc.
+they often talk about languages such as Lisp, Haskell, F#, Clojure, etc.
 
 But can you do functional programming in other languages?
-Of course,
-I have been writing functional-style programming in JavaScript/TypeScript for many years.
-You can also write functional code in C#, Java, and even C++.
 
-So are they all functional programming languages?
+Of course! You can do it in JavaScript/TypeScript,
+and you can do it in C#, Java, and even C++.
 
-I think most people will say no.
+They also talk about recursion, immutability, monoid, monad, functor, etc.
+
+So do they define functional programming?
 
 In order to design [`just-func`](https://github.com/justland/just-func) correctly,
 I send myself on a small research journey.
 
-## Functional Programming
+## Functional Programming Paradigm
 
-First of all, Functional Programming (FP) is a paradigm,
+Functional Programming (FP) is a paradigm,
 just like Object Oriented Programming (OOP) is a paradigm.
 
 FP has its root in lambda calculus, which is a subset of category theory.
 
-What is a category?
+Therefore, to understand FP, we should first understand category theory.
+
+There is a lot to learn about FP from category theory.
+But in this blog, we only need to answer the very first question: what is a category?
+
 Bartosz Milewski's excellent book [Category Theory for Programmers][category-theory-for-programmers] has the perfect description:
 
 > A category consists of objects and arrows that go between them.
@@ -52,9 +57,6 @@ it is about *a set of transformations `f`* that transforms *a set of objects `a`
 i.e.: `f(a) -> b`
 
 It is a function!
-
-To understand the essence of anything,
-look at the fundamentals to make it perfectly clear is often the best approach.
 
 In fact, if we look at this closely,
 we can derive the two basic *requirements* of FP:
@@ -69,9 +71,9 @@ Let me list a few here:
 
 - immutable data: this is needed in order for the function to be pure
 - first-class function: this preferred (but not required) so that we can use *a set of functions* for `a` or `b`
-- closure: this is preferred (but not required) so that we can do more with functions such as partial application or delay execution.
+- closure: this is preferred (but not required) so that we can do more with functions such as partial applications or delay execution.
 - declarative programming: this is the result of no needed to mutate data.
-- recursion instead of loop: this is result of not able to mutate data
+- recursion instead of looping: this is the result of not able to mutate data
 
 Notice that in "we can derive the two basic *requirements* of FP" I made the word *requirements* italic,
 and I also mentioned that "first-class function* is preferred but not required.
@@ -82,7 +84,7 @@ That is how you write functional code in OOP languages such as Java and C#.
 
 Therefore, the ONLY requirement of FP is pure function.
 
-Of course that is a lot more going on, such as composition, associativity, monoid, monad, functor, etc.
+Of course, that is a lot more going on, such as composition, associativity, monoid, monad, functor, etc.
 
 But those are categorizations and extensions to this simple concept.
 

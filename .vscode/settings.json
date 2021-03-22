@@ -1,0 +1,27 @@
+{
+  "grammarly.overrides": [
+    {
+      "files": [
+        "**/blog/2021-03-21-what-is-functional-programming.md"
+      ],
+      "config": {
+        "audience": "general",
+        "dialect": "american",
+        "domain": "casual",
+        "emotions": [
+          "confident",
+          "joyful",
+          "friendly"
+        ],
+        "goals": [
+          "tellStory"
+        ]
+      }
+    }
+  ],
+  "cSpell.words": [
+    "Bartosz",
+    "Milewski's",
+    "monoid"
+  ]
+}
