@@ -6,7 +6,7 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/uni.ico',
   organizationName: 'unional', // Usually your GitHub org/user name.
   projectName: 'unional.github.io', // Usually your repo name.
   themeConfig: {
@@ -15,10 +15,10 @@ module.exports = {
     },
     navbar: {
       title: 'Unional',
-      // logo: {
-      //   alt: 'My Site Logo',
-      //   src: 'img/logo.svg',
-      // },
+      logo: {
+        alt: 'Unional Blog Logo',
+        src: 'img/uni.png',
+      },
       items: [
         // {
         //   to: 'docs/',

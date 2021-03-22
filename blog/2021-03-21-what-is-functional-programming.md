@@ -2,12 +2,101 @@
 slug: welcome
 title: What is Functional Programming
 author: Unional
-author_title: Front End Engineer @ Facebook
-author_url: https://github.com/yangshun
-author_image_url: https://avatars0.githubusercontent.com/u/1315101?s=400&v=4
-tags: [facebook, hello, docusaurus]
+author_title: Clean Architect
+author_url: https://github.com/unional
+author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
+tags: [functional programming, just-func]
 ---
 
-Blog features are powered by the blog plugin. Simply add files to the `blog` directory. It supports tags as well!
+Recently I've been working on [`just-func`](https://github.com/justland/just-func).
 
-Delete the whole directory if you don't want the blog features. As simple as that!****
+I want to design it to be a homoiconic, functional programming language.
+
+As with everything,
+when you try to create something is the time you understand how little you know.
+
+This time, it's about functional programming.
+
+What exactly is functional programming?
+
+When people talk about functional programming,
+the first thing that comes to mind is the languages: Lisp, Haskell, F#, Clojure, etc.
+
+But can you do functional programming in other languages?
+Of course,
+I have been writing functional-style programming in JavaScript/TypeScript for many years.
+You can also write functional code in C#, Java, and even C++.
+
+So are they all functional programming languages?
+
+I think most people will say no.
+
+In order to design [`just-func`](https://github.com/justland/just-func) correctly,
+I send myself on a small research journey.
+
+## Functional Programming
+
+First of all, Functional Programming (FP) is a paradigm,
+just like Object Oriented Programming (OOP) is a paradigm.
+
+FP has its root in lambda calculus, which is a subset of category theory.
+
+What is a category?
+Bartosz Milewski's excellent book [Category Theory for Programmers][category-theory-for-programmers] has the perfect description:
+
+> A category consists of objects and arrows that go between them.
+
+To paraphrase and expand that a bit,
+it is about *a set of transformations `f`* that transforms *a set of objects `a`* to *a set of objects `b`*.
+
+i.e.: `f(a) -> b`
+
+It's a function!
+
+To understand the essence of anything,
+look at the fundamentals to make it perfectly clear is often the best approach.
+
+In fact, if we look at this closely,
+we can derive the two basic *requirements* of FP:
+
+1. Since we are talking about mathematics, this function `f(a) -> b` must be pure.
+2. `a` and `b` are just *set of objects*, this means they can be anything:\
+   values (such as string and numbers), set of values (such as array, list, vector, object),\
+   functions (higher-order function), or set of functions (generics)
+
+Any other characteristics of FP are just derivatives of these two requirements.
+Let me list a few here:
+
+- immutable data: this is needed in order for the function to be pure
+- first-class function: this preferred (but not required) so that we can use *a set of functions* for `a` or `b`
+- closure: this is preferred (but not required) so that we can do more with functions such as partial application or delay execution.
+- declarative programming: this is the result of no needed to mutate data.
+- recursion instead of loop: this is result of not able to mutate data
+
+Notice that in "we can derive the two basic *requirements* of FP" I made the word *requirements* italic,
+and I also mentioned that "first-class function* is preferred but not required.
+
+This is because we can always wrap a function in an object and pass it along.
+It is very clumsy, but is doable.
+That's how you write functional code in OOP language such as Java and C#.
+
+Therefore, the ONLY requirement of FP is data immutability.
+
+Of course that are a lot more going on, such as composition, associativity, monoid, monad, functor, etc.
+
+But those are categorizations and extensions to this simple concept.
+
+I'll talk about them at a later time.
+
+Happy coding!
+
+## References
+
+- [Clean Coders Humane Code Series](https://cleancoders.com/series/humane-code-real)
+- [Clean Coders Functional Programming Series](https://cleancoders.com/series/clean-code/functional-programming)
+- [Category Theory For Programmers][category-theory-for-programmers]
+- <https://www.tutorialspoint.com/functional_programming/functional_programming_introduction.htm>
+- <https://en.wikipedia.org/wiki/Functional_programming>
+- <https://www.guru99.com/functional-programming-tutorial.html>
+
+[category-theory-for-programmers]: https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/
