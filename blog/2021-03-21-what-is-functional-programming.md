@@ -51,15 +51,31 @@ Bartosz Milewski's excellent book [Category Theory for Programmers][category-the
 
 > A category consists of objects and arrows that go between them.
 
-To paraphrase and expand that a bit,
-it is about *a set of transformations `f`* that transforms *a set of objects `a`* to *a set of objects `b`*.
+From this definition, a category has two things: objects and arrows.
+
+What is an object? The definition didn't specify. It is intentional thou.
+For now, let's keep it that way.
+
+What is an arrow? The definition also didn't specify. But it does give a bit more information about it: arrows that go between them.
+
+Arrow is directional. And by saying go between them it means the arrow starts form one object and ends with one object.
+
+The start and end object can be the same object, or it can be a different object.
+
+So putting these back together, the definition becomes:
+
+> A category is about *a set of objects `a`* to *a set of objects `b`*, and *a set of transformations `f`* that transforms `a` to `b`.
 
 i.e.: `f(a) -> b`
 
 It is a function!
 
-In fact, if we look at this closely,
-we can derive the two basic *requirements* of FP:
+Note that `f`, `a`, and `b` all have their significances.
+
+This mean when talking about a specific category,
+we need to specify `f`, `a`, and `b`.
+
+From here, we can derive the two basic *requirements* of FP:
 
 1. Since we are talking about mathematics, this function `f(a) -> b` must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
