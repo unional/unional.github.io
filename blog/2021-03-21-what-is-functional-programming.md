@@ -58,9 +58,12 @@ For now, let's keep it that way.
 
 What is an arrow? The definition also didn't specify. But it does give a bit more information about it: arrows that go between them.
 
-Arrow is directional. And by saying go between them it means the arrow starts form one object and ends with one object.
+Arrow is directional, and "go between them" means the arrow starts form one object and ends with one object.
 
-The start and end object can be the same object, or it can be a different object.
+The start object and the end object can be the same object, or they can be different.
+
+One last thing is notice that they are plural: objects and arrows.
+In mathematics, that means they are a set: a set of objects and a set of arrows.
 
 So putting these back together, the definition becomes:
 
@@ -79,15 +82,15 @@ From here, we can derive the two basic *requirements* of FP:
 
 1. Since we are talking about mathematics, this function `f(a) -> b` must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
-   values (such as string and numbers), set of values (such as array, list, vector, object),\
-   functions (higher-order function), or set of functions (generics)
+   values (such as strings and numbers), set of values (such as arrays, lists, vectors, objects),\
+   functions (higher-order functions), or set of functions (generics)
 
 Any other characteristics of FP are just derivatives of these two requirements.
-Let me list a few here:
+Let list a few here:
 
-- immutable data: this is needed in order for the function to be pure
+- immutable data: this is needed for the function to be pure
 - first-class function: this preferred (but not required) so that we can use *a set of functions* for `a` or `b`
-- closure: this is preferred (but not required) so that we can do more with functions such as partial applications or delay execution.
+- closure: this is beneficial (but not required) as it allows function to capture additional context
 - declarative programming: this is the result of no needed to mutate data.
 - recursion instead of looping: this is the result of not able to mutate data
 
@@ -100,13 +103,12 @@ That is how you write functional code in OOP languages such as Java and C#.
 
 Therefore, the ONLY requirement of FP is pure function.
 
-Of course, that is a lot more going on, such as composition, associativity, monoid, monad, functor, etc.
+That means you can write functional programing any programming language.
 
-But those are categorizations and extensions to this simple concept.
+Of course, just that requirement is not that useful.
+There are still a lot more to talk about.
 
-I will talk about them at a later time.
-
-Happy coding!
+Until then, Happy coding!
 
 ## References
 
