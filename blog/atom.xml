@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://unional.github.io/blog</id>
+    <title>Unional Blog Blog</title>
+    <updated>2021-03-21T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://unional.github.io/blog"/>
+    <subtitle>Unional Blog Blog</subtitle>
+    <icon>https://unional.github.io/img/uni.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[What is Functional Programming]]></title>
+        <id>welcome</id>
+        <link href="https://unional.github.io/blog/welcome"/>
+        <updated>2021-03-21T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Recently I've been working on just-func.]]></summary>
+    </entry>
+</feed>
