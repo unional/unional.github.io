@@ -9,8 +9,8 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[What is Functional Programming]]></title>
-            <link>https://unional.github.io/blog/welcome</link>
-            <guid>welcome</guid>
+            <link>https://unional.github.io/blog/what-is-fp</link>
+            <guid>what-is-fp</guid>
             <pubDate>Sun, 21 Mar 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Recently I've been working on just-func.]]></description>
         </item>
