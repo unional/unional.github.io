@@ -2,7 +2,7 @@
 module.exports = {
   title: 'Unional Blog',
   tagline: 'My two.3498272 cents on programming',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://unional.github.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
