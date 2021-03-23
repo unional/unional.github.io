@@ -90,12 +90,12 @@ Let list a few here:
 
 - immutable data: this is needed for the function to be pure
 - first-class function: this preferred (but not required) so that we can use *a set of functions* for `a` or `b`
-- closure: this is beneficial (but not required) as it allows function to capture additional context
+- closure: this is beneficial (but not required) as it allows the function to capture additional contexts
 - declarative programming: this is the result of no needed to mutate data.
 - recursion instead of looping: this is the result of not able to mutate data
 
 Notice that in "we can derive the two basic *requirements* of FP" I made the word *requirements* italic,
-and I also mentioned that "first-class function* is preferred but not required.
+and I also mentioned that "first-class function* is preferred but not required".
 
 It is because we can always wrap a function in an object and pass it along.
 It is very clumsy but is doable.
@@ -103,10 +103,16 @@ That is how you write functional code in OOP languages such as Java and C#.
 
 Therefore, the ONLY requirement of FP is pure function.
 
-That means you can write functional programing any programming language.
+That means you can write functional programming code any programming language.
 
 Of course, just that requirement is not that useful.
-There are still a lot more to talk about.
+But it gives you a critical insight:
+
+> As long as you can find ways to keep your function pure,
+> you can get the benefits of functional programming.
+
+Obviously, there are still a lot more to talk about.
+I will cover them in the subsequence posts.
 
 Until then, Happy coding!
 

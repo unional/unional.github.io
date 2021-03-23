@@ -1,16 +1,28 @@
-# Effective Functional Programming Language
+# Immutability
 
 In the last blog,
 I go through the only requirement to write functional programming code: the ability to write pure function.
 
-It is not a very useful requirement as you can write pure functions in any programming language.
+In this blog, I'll do a deep dive into the first derivatives characteristic of pure function: immutability.
 
-In this blog, I'll go through language features that make writing functional programming easier.
+Immutability means that after you defined something, you cannot change it later on.
+Immutability brings a lot of inconvenience,
+but at the same time brings a lot of benefits.
+For example:
 
-The first feature is function as a first-class citizen.
+- 👍 easy to read
+- 👍 easy to test
+- 👍 easy to compare
+- 👍 caching, low memory footprint
+- 👍 enable optimization
+- 👍 thread safe
+- 👍 enforce functions to be pure
+- 👍 pass by reference
+- 👎 copy instead of mutate
+- 👎 cyclic data is hard
+- 👎 discourage large object
 
-This is very obvious because if the language does not support function as first-class citizen,
-the programmers have to wrap the function inside an object or an instance of a class.
+## References
 
-Again it is doable, but allowing programmers to pass functions around directly makes the code much easier to write.
-
+- <https://www.learnsteps.com/mutable-vs-immutable-datastructures/>
+- <https://stackoverflow.com/questions/1863515/pros-cons-of-immutability-vs-mutability>
