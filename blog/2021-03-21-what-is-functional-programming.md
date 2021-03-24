@@ -88,7 +88,7 @@ we need to specify `f`, `a`, and `b`.
 
 From here, we can derive the two basic *requirements* of FP:
 
-1. Since we are talking about mathematics, this function `f(a) -> b` is an equation.\
+1. Since we are talking about mathematics, this function `f(a) -> b` is an formula.\
    That means every time you call it with a specific `a'`, it will always return `b'`.\
    In other words, the function must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
