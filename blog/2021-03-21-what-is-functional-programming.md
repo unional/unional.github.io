@@ -28,17 +28,23 @@ But can you do functional programming in other languages?
 Of course! You can do it in JavaScript/TypeScript,
 and you can do it in C#, Java, and even C++.
 
-They also talk about recursion, immutability, monoid, monad, functor, etc.
+They also talk about pure function, immutability, recursion, monoid, monad, functor, etc.
 
-So do they define functional programming?
+So do these things define functional programming?
 
 In order to design [`just-func`](https://github.com/justland/just-func) correctly,
 I send myself on a small research journey.
 
-## Functional Programming Paradigm
+## Functional Programming is a Paradigm
 
 Functional Programming (FP) is a paradigm,
 just like Object Oriented Programming (OOP) is a paradigm.
+
+What is paradigm?
+
+> paradigm is a cognitive framework containing basic assumptions, ways of thinking, and methodology.
+
+In this context, it means that it is a specific approach to programming.
 
 FP has its root in lambda calculus, which is a subset of category theory.
 
@@ -56,18 +62,20 @@ From this definition, a category has two things: objects and arrows.
 What is an object? The definition didn't specify. It is intentional thou.
 For now, let's keep it that way.
 
-What is an arrow? The definition also didn't specify. But it does give a bit more information about it: arrows that go between them.
+What is an arrow? The definition also didn't specify.
+But it does give a bit more information about it: arrows that go between them.
 
-Arrow is directional, and "go between them" means the arrow starts form one object and ends with one object.
+Arrow is directional, and "go between them" means the arrow starts from one object and ends with one object.
 
 The start object and the end object can be the same object, or they can be different.
 
-One last thing is notice that they are plural: objects and arrows.
+Also, they are in plural form: objects and arrows.
 In mathematics, that means they are a set: a set of objects and a set of arrows.
 
 So putting these back together, the definition becomes:
 
-> A category is about *a set of objects `a`* to *a set of objects `b`*, and *a set of transformations `f`* that transforms `a` to `b`.
+> A category is about *a set of objects `a`* to *a set of objects `b`*,
+> and *a set of transformations `f`* that transforms `a` to `b`.
 
 i.e.: `f(a) -> b`
 
@@ -75,12 +83,14 @@ It is a function!
 
 Note that `f`, `a`, and `b` all have their significances.
 
-This mean when talking about a specific category,
+This means when talking about a specific category,
 we need to specify `f`, `a`, and `b`.
 
 From here, we can derive the two basic *requirements* of FP:
 
-1. Since we are talking about mathematics, this function `f(a) -> b` must be pure.
+1. Since we are talking about mathematics, this function `f(a) -> b` is an equation.\
+   That means every time you call it with a specific `a'`, it will always return `b'`.\
+   In other words, the function must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
    values (such as strings and numbers), set of values (such as arrays, lists, vectors, objects),\
    functions (higher-order functions), or set of functions (generics)
@@ -89,13 +99,14 @@ Any other characteristics of FP are just derivatives of these two requirements.
 Let list a few here:
 
 - immutable data: this is needed for the function to be pure
-- first-class function: this preferred (but not required) so that we can use *a set of functions* for `a` or `b`
-- closure: this is beneficial (but not required) as it allows the function to capture additional contexts
+- first-class function: this preferred (but not required) so that we can use *function* can be value,\
+  i.e., we can use function as `a` (callback), or `b` (higher-order function).
+- closure: this is beneficial (but not required) as it allows functions to capture additional contexts
 - declarative programming: this is the result of no needed to mutate data.
 - recursion instead of looping: this is the result of not able to mutate data
 
-Notice that in "we can derive the two basic *requirements* of FP" I made the word *requirements* italic,
-and I also mentioned that "first-class function* is preferred but not required".
+Notice that I italicize *requirements* in "We can derive the two basic *requirements* of FP",
+and I also mentioned that first-class function is preferred but not required.
 
 It is because we can always wrap a function in an object and pass it along.
 It is very clumsy but is doable.
