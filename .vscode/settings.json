@@ -17,11 +17,31 @@
           "tellStory"
         ]
       }
+    },
+    {
+      "files": [
+        "**/blog/2021-03-23-pure-function.md"
+      ],
+      "config": {
+        "audience": "general",
+        "dialect": "american",
+        "domain": "casual",
+        "emotions": [
+          "joyful",
+          "analytical"
+        ],
+        "goals": [
+          "describe"
+        ]
+      }
     }
   ],
   "cSpell.words": [
     "Bartosz",
     "Milewski's",
     "monoid"
+  ],
+  "cSpell.enableFiletypes": [
+    "markdown"
   ]
 }
