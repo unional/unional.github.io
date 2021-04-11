@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://unional.github.io/blog</id>
     <title>Unional Blog Blog</title>
-    <updated>2021-04-09T00:00:00.000Z</updated>
+    <updated>2021-04-10T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://unional.github.io/blog"/>
     <subtitle>Unional Blog Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[Structural Type vs Function Overload]]></title>
         <id>struct-type-func-overload</id>
         <link href="https://unional.github.io/blog/struct-type-func-overload"/>
-        <updated>2021-04-09T00:00:00.000Z</updated>
+        <updated>2021-04-10T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Structural type is what I want.]]></summary>
     </entry>
     <entry>

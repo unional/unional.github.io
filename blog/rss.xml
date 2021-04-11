@@ -4,14 +4,14 @@
         <title>Unional Blog Blog</title>
         <link>https://unional.github.io/blog</link>
         <description>Unional Blog Blog</description>
-        <lastBuildDate>Fri, 09 Apr 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 10 Apr 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[Structural Type vs Function Overload]]></title>
             <link>https://unional.github.io/blog/struct-type-func-overload</link>
             <guid>struct-type-func-overload</guid>
-            <pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate>
+            <pubDate>Sat, 10 Apr 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Structural type is what I want.]]></description>
         </item>
         <item>
