@@ -15,6 +15,7 @@ For example:
 - 👍 easy to compare
 - 👍 caching, low memory footprint
 - 👍 enable optimization
+- 👍 portability
 - 👍 thread safe
 - 👍 enforce functions to be pure
 - 👍 pass by reference
