@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[17],{88:function(t){t.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"structural-type","name":"structural-type","count":1,"permalink":"/blog/tags/structural-type"}')}}]);

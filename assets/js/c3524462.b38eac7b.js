@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkxyz=self.webpackChunkxyz||[]).push([[909],{9743:function(e){e.exports=JSON.parse('{"permalink":"/blog/tags/just-func","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

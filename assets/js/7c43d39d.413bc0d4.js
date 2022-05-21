@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkxyz=self.webpackChunkxyz||[]).push([[120],{4030:function(t){t.exports=JSON.parse('{"label":"structural-type","permalink":"/blog/tags/structural-type","allTagsPath":"/blog/tags","count":1}')}}]);
