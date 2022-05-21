@@ -1,10 +1,7 @@
 ---
 slug: pure-function
 title: Pure Function and beyond
-author: Unional
-author_title: Clean Architect
-author_url: https://github.com/unional
-author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
+author: [unional]
 tags: [functional programming, just-func]
 ---
 

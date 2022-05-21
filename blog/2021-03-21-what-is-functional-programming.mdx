@@ -1,10 +1,7 @@
 ---
 slug: what-is-fp
 title: What is Functional Programming
-author: Unional
-author_title: Clean Architect
-author_url: https://github.com/unional
-author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
+authors: [unional]
 tags: [functional programming, just-func]
 ---
 
@@ -77,7 +74,7 @@ So putting these back together, the definition becomes:
 > A category is about *a set of objects `a`* to *a set of objects `b`*,
 > and *a set of transformations `f`* that transforms `a` to `b`.
 
-i.e.: `f(a) -> b`
+i.e.: `f(a) ⇾ b`
 
 It is a function!
 
@@ -88,18 +85,18 @@ we need to specify `f`, `a`, and `b`.
 
 From here, we can derive the two basic *requirements* of FP:
 
-1. Since we are talking about mathematics, this function `f(a) -> b` is a formula.\
+1. Since we are talking about mathematics, this function `f(a) ⇾ b` is a formula.\
    That means every time you call it with a specific `a'`, it will always return `b'`.\
    In other words, the function must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
-   values (such as strings and numbers), set of values (such as arrays, lists, vectors, objects),\
+   values (such as strings and numbers), set of values (such as arrays, lists, vectors, objects), \
    functions (higher-order functions), or set of functions (generics)
 
 Any other characteristics of FP are just derivatives of these two requirements.
 Let list a few here:
 
 - Immutable data: this is needed for the function to be pure
-- First-class function: this preferred (but not required) so that we can use *function* can be value,\
+- First-class function: this preferred (but not required) so that we can use *function* can be value, \
   i.e., we can use function as `a` (callback), or `b` (higher-order function).
 - Closure: this is beneficial (but not required) as it allows functions to capture additional contexts
 - Declarative programming: this is the result of no needed to mutate data.

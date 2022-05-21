@@ -1,3 +1,4 @@
 homoiconic
 monoid
 Milewski
+just-func

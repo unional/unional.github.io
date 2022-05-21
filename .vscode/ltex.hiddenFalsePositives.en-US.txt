@@ -1,0 +1,2 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q---\r\nslug: struct-type-func-overload\r\ntitle: Structural Type vs Function Overload\r\nauthors: [unional]\r\ntags: [type-system, structural-type, function-overload]\r\n---\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q---\nslug: what-is-fp\ntitle: What is Functional Programming\nauthors: [unional]\ntags: [functional programming, just-func]\n---\\E$"}

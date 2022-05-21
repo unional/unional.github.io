@@ -1,10 +1,7 @@
 ---
 slug: struct-type-func-overload
 title: Structural Type vs Function Overload
-author: Unional
-author_title: Clean Architect
-author_url: https://github.com/unional
-author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
+authors: [unional]
 tags: [type-system, structural-type, function-overload]
 ---
 
@@ -34,12 +31,12 @@ Why can't they co-exist?
 Let's take a look at an example:
 
 ```typescript
-type A  = { a: number }
+type A = { a: number }
 type B = { b: string }
 
-function foo(input: A) { /*..snip..*/ }
+function foo(input: A) { /*…snip…*/ }
 
-function foo(input: B) { /*..snip..*/ }
+function foo(input: B) { /*…snip…*/ }
 ```
 
 If the `input` is `{ a: 1, b: 'b' }`,
@@ -52,9 +49,9 @@ and each of them have their own implementation.
 i.e.:
 
 ```ts
-function foo(input: A) { /*..snip..*/ }
+function foo(input: A) { /*…snip…*/ }
 
-function foo(input: B) { /*..snip..*/ }
+function foo(input: B) { /*…snip…*/ }
 ```
 
 TypeScript's function overloading is really signature overloading:
@@ -62,7 +59,7 @@ TypeScript's function overloading is really signature overloading:
 ```ts
 function foo(input: A): void
 function foo(input: B): void
-function foo(input: A | B) { /*..snip..*/ }
+function foo(input: A | B) { /*…snip…*/ }
 ```
 
 This difference is important because it allows you to add function overload in different files and modules.
