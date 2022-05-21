@@ -1639,11 +1639,6 @@
     "@types/react-router-dom" "*"
     react-helmet-async "*"
 
-"@docusaurus/module-type-aliases@^2.0.0-alpha.72":
-  version "2.0.0-alpha.72"
-  resolved "https://registry.yarnpkg.com/@docusaurus/module-type-aliases/-/module-type-aliases-2.0.0-alpha.72.tgz#0f568dfc7852bf65f7cbabbcbb7ffcc63f57a409"
-  integrity sha512-z8qGXvvyF8FYgnc0c7v5BqulrUJ0A01jsb2gT4miC6Gc/pKnpahZqBXcm1MrQiiUrlHMEjdOAxlHQVZuOwSSRQ==
-
 "@docusaurus/plugin-content-blog@2.0.0-beta.20":
   version "2.0.0-beta.20"
   resolved "https://registry.yarnpkg.com/@docusaurus/plugin-content-blog/-/plugin-content-blog-2.0.0-beta.20.tgz#7c0d413ac8df9a422a0b3ddd90b77ec491bbda15"
