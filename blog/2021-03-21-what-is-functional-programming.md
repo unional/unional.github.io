@@ -8,7 +8,7 @@ author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
 tags: [functional programming, just-func]
 ---
 
-I have been promoting and migrating from Object Oriented Programming to Functional Programing for many years, and I loved it.
+I have been promoting and migrating from Object-Oriented Programming to Functional Programming for many years, and I loved it.
 
 But just like everything,
 the more you dig into it, the more you realize what you do not know.
@@ -38,11 +38,11 @@ I send myself on a small research journey.
 ## Functional Programming is a Paradigm
 
 Functional Programming (FP) is a paradigm,
-just like Object Oriented Programming (OOP) is a paradigm.
+just like Object-Oriented Programming (OOP) is a paradigm.
 
 What is paradigm?
 
-> paradigm is a cognitive framework containing basic assumptions, ways of thinking, and methodology.
+> Paradigm is a cognitive framework containing basic assumptions, ways of thinking, and methodology.
 
 In this context, it means that it is a specific approach to programming.
 
@@ -81,14 +81,14 @@ i.e.: `f(a) -> b`
 
 It is a function!
 
-Note that `f`, `a`, and `b` all have their significances.
+Note that `f`, `a`, and `b` all have their significance.
 
 This means when talking about a specific category,
 we need to specify `f`, `a`, and `b`.
 
 From here, we can derive the two basic *requirements* of FP:
 
-1. Since we are talking about mathematics, this function `f(a) -> b` is an formula.\
+1. Since we are talking about mathematics, this function `f(a) -> b` is a formula.\
    That means every time you call it with a specific `a'`, it will always return `b'`.\
    In other words, the function must be pure.
 2. `a` and `b` are just *set of objects*, this means they can be anything:\
@@ -98,12 +98,12 @@ From here, we can derive the two basic *requirements* of FP:
 Any other characteristics of FP are just derivatives of these two requirements.
 Let list a few here:
 
-- immutable data: this is needed for the function to be pure
-- first-class function: this preferred (but not required) so that we can use *function* can be value,\
+- Immutable data: this is needed for the function to be pure
+- First-class function: this preferred (but not required) so that we can use *function* can be value,\
   i.e., we can use function as `a` (callback), or `b` (higher-order function).
-- closure: this is beneficial (but not required) as it allows functions to capture additional contexts
-- declarative programming: this is the result of no needed to mutate data.
-- recursion instead of looping: this is the result of not able to mutate data
+- Closure: this is beneficial (but not required) as it allows functions to capture additional contexts
+- Declarative programming: this is the result of no needed to mutate data.
+- Recursion instead of looping: this is the result of not able to mutate data
 
 Notice that I italicize *requirements* in "We can derive the two basic *requirements* of FP",
 and I also mentioned that first-class function is preferred but not required.

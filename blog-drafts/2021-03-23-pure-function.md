@@ -1,6 +1,6 @@
 ---
 slug: pure-function
-title: What is Pure Function anyway
+title: Pure Function and beyond
 author: Unional
 author_title: Clean Architect
 author_url: https://github.com/unional
@@ -8,19 +8,268 @@ author_image_url: https://avatars0.githubusercontent.com/unional?s=400&v=4
 tags: [functional programming, just-func]
 ---
 
-In the last blog,
-I said that pure function is the only requirement to do functional programming.
-
-But what is a pure function?
-
-That's today's topic.
-
-## Definition of Pure Function
-
-Pure function is often defined by its characteristics:
+What is pure function?
+The typical definition of pure function is defined by these two constraints:
 
 - a function with no side effect, and
 - for a given input, it always returns the same output
+
+In the [What is Functional Programming](https://unional.github.io/blog/what-is-fp) blog,
+I said that pure function is the only requirement to do functional programming.
+
+That description is slightly off.
+
+To be 100% precise,
+we are looking for a category of functions that can be used to model the mathematic formula.
+
+The result is pure function.
+
+That's why pure function is defined by how it behave,
+rather than what it stands for.
+
+How does a pure function looks like?
+What can we do in a pure function?
+What are the things that we do will make the function impure?
+
+That's what we are going to look into today.
+
+After that,
+I will end with a brief touch on the deficiency of pure function and functional programming langauge.
+
+So let's get started.
+
+There are many forms of pure function,
+from simple to complex to controversal.
+
+To discover these forms,
+one good way is to analyze the two constraints:
+
+- a function with no side effect, and
+- for a given input, it always returns the same output
+
+What does it mean by **a function with no side effect**?
+
+Side effect means changing the state of the application or its environment.
+Note that there are exception to this.
+But for now,
+we can consider it at its face value.
+
+How can you create side effects?
+There are two ways:
+
+- assignment
+- calling function that has side effects
+
+That means if your function is not making assignment or calling other functions,
+we can tell if the function is a pure function or not based on the second criteria.
+These are the simple pure functions.
+
+The simplest one is a function that does not take any parameter and returns nothing.
+
+```ts
+function doNothing() {}
+```
+
+There are some subtle differences about what does nothing means in various languages.
+They could be void, null, undefined, empty, or never.
+
+
+
+Depends on the language, there can be 3 different variations of **nothing**:
+void, null, or empty
+
+They can apply to both parameter and return value, creating 6 different permutations.
+
+**void** means nothing. It is commonly used indicating the
+
+Nothing|void means not expecting anything, not even **undefined**.
+This is best described by the **Void** type in Haskell.
+
+```haskell
+doNothing :: Void -> Void
+```
+
+There are 4 kinds of simple pure functions.
+
+The first one is
+
+and always returns the same output, it is a pure function.
+
+These functions are often called constant function:
+
+```ts
+function giveMeFive(): 5 {
+  return 5
+}
+```
+
+One special form fo constant function is a void function,
+meaning it
+
+
+
+
+
+
+In particular, these characteristics allow us to:
+
+- reference immutable data in scope chain
+- self-referencing: referring to the function itself inside the body of the function.
+- pass function in variable
+
+In term of language design, this draws an important conclusion:
+
+> While functional programming has its root in mathematics,
+> programming is a different domain and the circumstances are different.
+> So applying abstractions and restrictions to make the problem align with the metaphor we start with would severely limit our ability to express ourselves and solve the problem efficiently.
+
+This is actually a breakthrough for myself in my journey of defining `just-func`.
+But that's a different story and I'll cover it in another blog.
+
+Back to the topic of pure function,
+let's go through a few examples to show the basic forms of pure functions.
+
+## scope-independent function
+
+This is the simplest form and also the most restrictive:
+
+```ts
+function inc(x: number) {
+  return x + 1
+}
+```
+
+Scope-independent function does not access any references in the scope chain.
+
+## immutable scoped function
+
+Function in this form access immutable references in the scope chain.
+
+There are several variations:
+
+```ts
+// access global scope
+// global.ts
+global.VALUE = 1
+
+// plusOne.ts
+function plusOne() {
+  return global.VALUE + 1
+}
+```
+
+```ts
+// access local scope
+const VALUE = 1
+function plusOne() {
+  return VALUE + 1
+}
+```
+
+```ts
+// access import reference
+// constant.ts
+export const VALUE = 1
+
+// plusOne.ts
+import { VALUE } from './constant'
+
+function plusOne() {
+  return VALUE + 1
+}
+```
+
+```ts
+// access parent scope
+function main() {
+  const VALUE = 1
+  function plusOne() {
+    return VALUE + 1
+  }
+}
+```
+
+Note that the reference can be a value or a function.
+
+## immutable closure function
+
+As a slightly modified form of immutable scope function,
+when you define a function within another function and return it,
+(i.e. creating a higher-order function),
+the returned function need to access the variables and references in the scope-chain when it is defined.
+
+This is what we call closure.
+
+When the function access only immutable references, that's immutable closure function:
+
+```ts
+import { foo } from './foo'
+
+const LOCAL = 'l'
+
+function create() {
+  const SCOPE = 'b'
+  return function immutableClosureFunction() {
+    return foo(LOCAL, SCOPE)
+  }
+}
+```
+
+## other forms
+
+So far we have covered the basic forms of pure functions.
+Are there other forms of pure functions?
+
+
+
+- EachAll variables are provided in the algorithm.
+- One function can can call other functions
+-
+
+
+From the original of functional programming,
+pure function is the kind of function
+
+Pure function is often defined by its characteristics:
+
+
+Why do we define them by its characteristics?
+It's like defining an apple is red and sweet.
+While it is useful and delicious,
+we might miss all the other apples that are green, yellow, and sour.
+
+In this blog,
+I'm going to go up, down, and sideway around the definition of pure function.
+Hopefully at the end it gives you some new insight of what it is,
+and what it can look like in future languages.
+
+## Pure function as math formula
+
+When trace back to the root of functional programming,
+the definition is straight forward:
+
+> A pure function is equivalent to a mathematic formula
+
+In the world of mathematic,
+there is no such thing as side effects.
+It is also obvious that,
+when you apply a formula with a specific set of variables,
+you will always get the same result.
+
+If we based on this definition and try to model pure function,
+we will come up with a few more characteristics:
+
+- Each function is self-contained. All variables are provided in the algorithm.
+- One function can can call other functions
+
+
+
+From this definition,
+there is actually something very critical,
+but I'll leave that in another blog post.
+
+
+
 
 While it is definitely useful,
 I want to look for a definition that describe what it is,
