@@ -4,3 +4,55 @@ title: Understanding GitLab CI system
 authors: [unional]
 tags: [GitLab, CI/CD]
 ---
+
+## The basics
+
+- `.gitlab-ci.yml`
+  - configurable
+- Settings > Access tokens
+- Settings > Repository > Protected branches
+- Settings > Repository > Deploy tokens
+- Settings > Repository > Deploy keys
+- Settings > CI/CD > General pipelines
+  - Git strategy
+    - does not checkout `main`
+  - Git shallow clone (20 -> 1)
+  - Test coverage parsing
+- Settings > CI/CD > Protected environments
+- Settings > CI/CD > Artifacts
+- Settings > CI/CD > Variables
+- Settings > CI/CD > Pipeline triggers
+- Settings > CI/CD > Token Access
+  - Limit `CI_JOB_TOKEN` access (off -> on)
+- Settings > CI/CD > Pipeline subscriptions
+  - looks like a poorman solution
+- CI/CD > Pipelines
+- CI/CD > Editor
+- CI/CD > Jobs
+- CI/CD > Schedules
+- Analytics > CI/CD
+- Analytics > Repository
+  - Code coverage
+- Settings > General > Badges
+
+## GitHub Action vs GitLab
+
+| GitHub Action       | GitLab             |
+| ------------------- | ------------------ |
+| `.github/workflows` | `[.gitlab-ci.yml]` |
+| workflows           | pipelines          |
+| `needs`             | `stages/needs`     |
+| `jobs/<job>`        | `<job>`            |
+| `steps`             | `script`           |
+| `uses`              | `include/extends`  |
+
+## Test Coverage
+
+- external system
+- GitLab system
+
+  - test Coverage
+
+- Test coverage results
+- Code coverage history
+- Test coverage visualization
