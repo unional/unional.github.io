@@ -10,7 +10,9 @@
     "build:doc": "echo not needed",
     "lint": "turbo run lint",
     "d": "pnpm --filter docusaurus",
+    "docusaurus": "pnpm --filter docusaurus",
     "a": "pnpm --filter astro",
+    "astro": "pnpm --filter astro",
     "verify": "turbo run lint build depcheck coverage size"
   },
   "devDependencies": {
