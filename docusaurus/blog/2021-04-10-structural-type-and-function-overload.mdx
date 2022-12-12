@@ -1,0 +1,79 @@
+---
+slug: struct-type-func-overload
+title: Structural Type vs Function Overload
+authors: [unional]
+tags: [type-system, structural-type, function-overload]
+---
+
+Structural type is what I want.
+
+Function overloading is also what I want.
+
+Can they co-exist? The answer is no.
+
+Let me explain.
+
+Structural type avoids a lot of architecture problems existed in nominal type languages.
+
+So to me, when designing a new language or choosing a language to work on,
+it is *almost* a must (except `rust`, which is too good to pass on).
+
+Function overloading allows the code to be humane,
+especially for functional programming.
+
+With function overloading,
+you can define the same function with different parameters and different types of parameters with the same name.
+
+So instead of using a different function for each type,
+you can call the same function (at least that's how it appears at the call site).
+
+Why can't they co-exist?
+Let's take a look at an example:
+
+```typescript
+type A = { a: number }
+type B = { b: string }
+
+function foo(input: A) { /*…snip…*/ }
+
+function foo(input: B) { /*…snip…*/ }
+```
+
+If the `input` is `{ a: 1, b: 'b' }`,
+the compiler will not be able to figure out which `foo()` to invoke.
+
+Note that when I say function overloading,
+I mean function with the same name but with different parameters,
+and each of them have their own implementation.
+
+i.e.:
+
+```ts
+function foo(input: A) { /*…snip…*/ }
+
+function foo(input: B) { /*…snip…*/ }
+```
+
+TypeScript's function overloading is really signature overloading:
+
+```ts
+function foo(input: A): void
+function foo(input: B): void
+function foo(input: A | B) { /*…snip…*/ }
+```
+
+This difference is important because it allows you to add function overload in different files and modules.
+
+With signature overloading,
+you have to know ahead of time all the types you need to support,
+creating a top-down dependency same as those in nominal type languages.
+
+In the same fashion, discriminated union has the same problem.
+
+Is there a way to solve this?
+
+Well, sort of: generics and HKT.
+
+But that's a different topic.
+
+Happy Coding.

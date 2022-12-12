@@ -59,7 +59,7 @@ module.exports = {
             // },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/unional',
+              href: 'https://twitter.com/Unional',
             },
           ],
         },
@@ -88,13 +88,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/unional/unional.github.io/edit/master/docs/',
+            'https://github.com/unional/unional.github.io/edit/main/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/unional/unional.github.io/edit/master/blog/',
+            'https://github.com/unional/unional.github.io/edit/main/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

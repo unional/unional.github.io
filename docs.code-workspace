@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../typescript-guidelines"
+		},
+		{
+			"path": "../.github"
 		}
 	],
 	"settings": {}
