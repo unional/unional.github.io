@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkxyz=self.webpackChunkxyz||[]).push([[593],{4370:function(a){a.exports=JSON.parse('{"label":"functional programming","permalink":"/blog/tags/functional-programming","allTagsPath":"/blog/tags","count":1}')}}]);
