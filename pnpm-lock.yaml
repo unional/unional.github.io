@@ -22,7 +22,7 @@ importers:
       '@docusaurus/preset-classic': 2.2.0
       '@docusaurus/theme-classic': ^2.2.0
       '@docusaurus/types': ^2.2.0
-      '@mdx-js/react': ^1.6.22
+      '@mdx-js/react': ^2.0.0
       '@tsconfig/docusaurus': ^1.0.5
       '@types/node': ^18.11.13
       clsx: 1.2.1
@@ -33,7 +33,7 @@ importers:
       '@docusaurus/core': 2.2.0_ap5pws3qzjvbqgl4hbhhfurz4a
       '@docusaurus/plugin-client-redirects': 2.2.0_ap5pws3qzjvbqgl4hbhhfurz4a
       '@docusaurus/preset-classic': 2.2.0_o4scbtliisanygemawej7x2d6i
-      '@mdx-js/react': 1.6.22_react@18.2.0
+      '@mdx-js/react': 2.2.1_react@18.2.0
       clsx: 1.2.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -2037,7 +2037,7 @@ packages:
     peerDependencies:
       react: '*'
     dependencies:
-      '@types/react': 17.0.52
+      '@types/react': 18.0.26
       prop-types: 15.8.1
       react: 18.2.0
 
@@ -2404,6 +2404,16 @@ packages:
       react: ^16.13.1 || ^17.0.0
     dependencies:
       react: 18.2.0
+
+  /@mdx-js/react/2.2.1_react@18.2.0:
+    resolution: {integrity: sha512-YdXcMcEnqZhzql98RNrqYo9cEhTTesBiCclEtoiQUbJwx87q9453GTapYU6kJ8ZZ2ek1Vp25SiAXEFy5O/eAPw==}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@types/mdx': 2.0.3
+      '@types/react': 18.0.26
+      react: 18.2.0
+    dev: false
 
   /@mdx-js/util/1.6.22:
     resolution: {integrity: sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==}
@@ -2795,6 +2805,10 @@ packages:
     dependencies:
       '@types/unist': 2.0.6
 
+  /@types/mdx/2.0.3:
+    resolution: {integrity: sha512-IgHxcT3RC8LzFLhKwP3gbMPeaK7BM9eBH46OdapPA7yvuIUJ8H6zHZV53J8hGZcTSnt95jANt+rTBNUUc22ACQ==}
+    dev: false
+
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
 
@@ -2853,13 +2867,6 @@ packages:
     dependencies:
       '@types/history': 4.7.11
       '@types/react': 18.0.26
-
-  /@types/react/17.0.52:
-    resolution: {integrity: sha512-vwk8QqVODi0VaZZpDXQCmEmiOuyjEFPY7Ttaw5vjM112LOq37yz1CDJGrRJwA1fYEq4Iitd5rnjd1yWAc/bT+A==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.2
-      csstype: 3.1.1
 
   /@types/react/18.0.26:
     resolution: {integrity: sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug==}
