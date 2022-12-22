@@ -1,0 +1,141 @@
+---
+title: What is Functional Programming
+pubDate: 2021-03-21
+authors: unional
+image:
+  url: 'https://astro.build/assets/blog/astro-1-release-update/cover.jpeg'
+  alt: 'The Astro logo with the word One.'
+tags: [functional programming, just-func]
+---
+
+# functional programming
+
+I have been promoting and migrating from Object-Oriented Programming to Functional Programming for many years, and I loved it.
+
+But just like everything,
+the more you dig into it, the more you realize what you do not know.
+
+Recently I have been working on [`just-func`](https://github.com/justland/just-func).
+
+I want to design it to be a homoiconic, functional programming language.
+
+But when I put my finger to it,
+I start wondering what exactly is functional programming.
+
+When people talk about functional programming,
+they often talk about languages such as Lisp, Haskell, F#, Clojure, etc.
+
+But can you do functional programming in other languages?
+
+Of course! You can do it in JavaScript/TypeScript,
+and you can do it in C#, Java, and even C++.
+
+They also talk about pure function, immutability, recursion, monoid, monad, functor, etc.
+
+So do these things define functional programming?
+
+In order to design [`just-func`](https://github.com/justland/just-func) correctly,
+I send myself on a small research journey.
+
+## Functional Programming is a Paradigm
+
+Functional Programming (FP) is a paradigm,
+just like Object-Oriented Programming (OOP) is a paradigm.
+
+What is paradigm?
+
+> Paradigm is a cognitive framework containing basic assumptions, ways of thinking, and methodology.
+
+In this context, it means that it is a specific approach to programming.
+
+FP has its root in lambda calculus, which is a subset of category theory.
+
+Therefore, to understand FP, we should first understand category theory.
+
+There is a lot to learn about FP from category theory.
+But in this blog, we only need to answer the very first question: what is a category?
+
+Bartosz Milewski's excellent book [Category Theory for Programmers][category-theory-for-programmers] has the perfect description:
+
+> A category consists of objects and arrows that go between them.
+
+From this definition, a category has two things: objects and arrows.
+
+What is an object? The definition didn't specify. It is intentional thou.
+For now, let's keep it that way.
+
+What is an arrow? The definition also didn't specify.
+But it does give a bit more information about it: arrows that go between them.
+
+Arrow is directional, and "go between them" means the arrow starts from one object and ends with one object.
+
+The start object and the end object can be the same object, or they can be different.
+
+Also, they are in plural form: objects and arrows.
+In mathematics, that means they are a set: a set of objects and a set of arrows.
+
+So putting these back together, the definition becomes:
+
+> A category is about _a set of objects `a`_ to _a set of objects `b`_,
+> and _a set of transformations `f`_ that transforms `a` to `b`.
+
+i.e.: `f(a) ⇾ b`
+
+It is a function!
+
+Note that `f`, `a`, and `b` all have their significance.
+
+This means when talking about a specific category,
+we need to specify `f`, `a`, and `b`.
+
+From here, we can derive the two basic _requirements_ of FP:
+
+1. Since we are talking about mathematics, this function `f(a) ⇾ b` is a formula.\
+   That means every time you call it with a specific `a'`, it will always return `b'`.\
+   In other words, the function must be pure.
+2. `a` and `b` are just _set of objects_, this means they can be anything:\
+   values (such as strings and numbers), set of values (such as arrays, lists, vectors, objects), \
+   functions (higher-order functions), or set of functions (generics)
+
+Any other characteristics of FP are just derivatives of these two requirements.
+Let list a few here:
+
+- Immutable data: this is needed for the function to be pure
+- First-class function: this preferred (but not required) so that we can use _function_ can be value, \
+  i.e., we can use function as `a` (callback), or `b` (higher-order function).
+- Closure: this is beneficial (but not required) as it allows functions to capture additional contexts
+- Declarative programming: this is the result of no needed to mutate data.
+- Recursion instead of looping: this is the result of not able to mutate data
+
+Notice that I italicize _requirements_ in "We can derive the two basic _requirements_ of FP",
+and I also mentioned that first-class function is preferred but not required.
+
+It is because we can always wrap a function in an object and pass it along.
+It is very clumsy but is doable.
+That is how you write functional code in OOP languages such as Java and C#.
+
+Therefore, the ONLY requirement of FP is pure function.
+
+That means you can write functional programming code any programming language.
+
+Of course, just that requirement is not that useful.
+But it gives you a critical insight:
+
+> As long as you can find ways to keep your function pure,
+> you can get the benefits of functional programming.
+
+Obviously, there are still a lot more to talk about.
+I will cover them in the subsequence posts.
+
+Until then, Happy coding!
+
+## References
+
+- [Clean Coders Humane Code Series](https://cleancoders.com/series/humane-code-real)
+- [Clean Coders Functional Programming Series](https://cleancoders.com/series/clean-code/functional-programming)
+- [Category Theory For Programmers][category-theory-for-programmers]
+- [Functional Programming Introduction](https://www.tutorialspoint.com/functional_programming/functional_programming_introduction.htm)
+- [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming)
+- [Functional Programming Tutorial](https://www.guru99.com/functional-programming-tutorial.html)
+
+[category-theory-for-programmers]: https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/
