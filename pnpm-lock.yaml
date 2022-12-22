@@ -10,10 +10,10 @@ importers:
 
   astro:
     specifiers:
-      '@astrojs/mdx': ^0.12.1
+      '@astrojs/mdx': ^0.13.0
       astro: ^1.6.14
     dependencies:
-      '@astrojs/mdx': 0.12.1
+      '@astrojs/mdx': 0.13.0
       astro: 1.6.14
 
   docusaurus:
@@ -227,8 +227,8 @@ packages:
       - supports-color
     dev: false
 
-  /@astrojs/mdx/0.12.1:
-    resolution: {integrity: sha512-d41ariAR7VMHb+4ALiXPbYXMPSqjpGqTAZBSp40sRam084r/4Vwr6F1mwRKWFDwbwgN6iLN+fczSQDvqoOD2JQ==}
+  /@astrojs/mdx/0.13.0:
+    resolution: {integrity: sha512-2D/O5AjCBQQ/PLx3P/WysACdFxz97iQPu55hy9pc+u04a+fMFuVdKm9ftWXpsNHL2SXbKb7uRpcuFw93FnRNDw==}
     engines: {node: ^14.18.0 || >=16.12.0}
     dependencies:
       '@astrojs/prism': 1.0.2
