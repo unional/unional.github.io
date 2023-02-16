@@ -10,10 +10,10 @@ importers:
 
   astro:
     specifiers:
-      '@astrojs/mdx': ^0.16.0
+      '@astrojs/mdx': ^0.17.0
       astro: ^2.0.0
     dependencies:
-      '@astrojs/mdx': 0.16.0_astro@2.0.0
+      '@astrojs/mdx': 0.17.0_astro@2.0.0
       astro: 2.0.0
 
   docusaurus:
@@ -242,14 +242,14 @@ packages:
       - supports-color
     dev: false
 
-  /@astrojs/mdx/0.16.0_astro@2.0.0:
-    resolution: {integrity: sha512-HNk0FhNNthI7+pLmheJyPVU36dXE5l+9UwmmnrMV6COHNZIO2t+pnWnsushEDYZjpkYITDwnXKnQAtD8Mqj4xw==}
+  /@astrojs/mdx/0.17.0_astro@2.0.0:
+    resolution: {integrity: sha512-vy4m/mwzdfDK4jC9wraFLMVwx13eXBPC8r7nkO5s8YlcFX6IDcl2LKPurP3+/ibpTei9IPQLIZOufXRDO96SYg==}
     engines: {node: '>=16.12.0'}
     dependencies:
       '@astrojs/markdown-remark': 2.0.1_astro@2.0.0
       '@astrojs/prism': 2.0.0
-      '@mdx-js/mdx': 2.1.5
-      '@mdx-js/rollup': 2.2.1
+      '@mdx-js/mdx': 2.3.0
+      '@mdx-js/rollup': 2.3.0
       acorn: 8.8.1
       es-module-lexer: 0.10.5
       estree-util-visit: 1.2.0
@@ -3332,8 +3332,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@mdx-js/mdx/2.1.5:
-    resolution: {integrity: sha512-zEG0lt+Bl/r5U6e0TOS7qDbsXICtemfAPquxWFsMbdzrvlWaqMGemLl+sjVpqlyaaiCiGVQBSGdCk0t1qXjkQg==}
+  /@mdx-js/mdx/2.3.0:
+    resolution: {integrity: sha512-jLuwRlz8DQfQNiUCJR50Y09CGPq3fLtmtUQfVrj79E0JWu3dvsVcxVIcfhR5h0iXu+/z++zDrYeiJqifRynJkA==}
     dependencies:
       '@types/estree-jsx': 1.0.0
       '@types/mdx': 2.0.3
@@ -3373,12 +3373,12 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mdx-js/rollup/2.2.1:
-    resolution: {integrity: sha512-wpGeK9iO7gPEIyC/ZTiggLY/MkEWDj5IWSsjlpkefgjb5RbmUukXU6/D2rHA+VAopxigS3NlaIL2ctpYBi4fmg==}
+  /@mdx-js/rollup/2.3.0:
+    resolution: {integrity: sha512-wLvRfJS/M4UmdqTd+WoaySEE7q4BIejYf1xAHXYvtT1du/1Tl/z2450Gg2+Hu7fh05KwRRiehiTP9Yc/Dtn0fA==}
     peerDependencies:
       rollup: '>=2'
     dependencies:
-      '@mdx-js/mdx': 2.1.5
+      '@mdx-js/mdx': 2.3.0
       '@rollup/pluginutils': 5.0.2
       source-map: 0.7.4
       vfile: 5.3.6
