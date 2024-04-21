@@ -1,17 +1,19 @@
 {
   "name": "astro",
-  "type": "module",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
+    "astro": "astro",
+    "build": "astro check && astro build",
     "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "start": "astro dev"
   },
   "dependencies": {
-    "@astrojs/mdx": "^2.2.2",
-    "astro": "^4.5.10"
+    "@astrojs/check": "^0.5.2",
+    "@astrojs/starlight": "^0.21.0",
+    "astro": "^4.6.1",
+    "sharp": "^0.33.0"
   }
 }

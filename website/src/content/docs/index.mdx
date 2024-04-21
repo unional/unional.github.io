@@ -1,0 +1,36 @@
+---
+title: Welcome to the Unional Blog
+description: Sharing my two cents on software engineering.
+template: splash
+hero:
+  tagline: Sharing my <strong>2.3498272</strong> cents on software engineering
+  image:
+    file: ../../assets/uni.png
+  # actions:
+  #   - text: Example Guide
+  #     link: /guides/example/
+  #     icon: right-arrow
+  #     variant: primary
+  #   - text: Read the Starlight docs
+  #     link: https://starlight.astro.build
+  #     icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## [MY](./about_me/) area of interest
+
+<CardGrid stagger>
+	<Card title="Architecture" icon="rocket">
+		Why should you care?
+	</Card>
+	<Card title="TypeScript" icon="puzzle">
+		[The TypeScript Blackbook](https://unional.github.io/typescript-blackbook/)
+	</Card>
+	<Card title="Interesting Projects" icon="star">
+		The good stuff.
+	</Card>
+	<Card title="Random Thoughts" icon="random">
+		The usual crazy stuff.
+	</Card>
+</CardGrid>

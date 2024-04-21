@@ -511,8 +511,6 @@ export function start() {
 In the example above, there are four scopes in the closure for `exec()`:
 `global > module > start > exec`.
 
-
 Closure itself is a pretty complex topic, so I'll have another blog talking about it.
-
 
 [just-func]: https://github.com/justland/just-func
