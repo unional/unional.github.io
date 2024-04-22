@@ -14,8 +14,7 @@ I may also talk about my career as an Engineer,
 my love of programming and [architecture](../architecture/),
 and how I spend quite some amount of time into the [projects](https://github.com/unional?tab=repositories&q=&type=source) that I have created over the years.
 
-I
-can also go over Timely Wealth, business, and investing too.
+I can also go over Timely Wealth, business, and investing too.
 
 But they are topics that can span over multiple articles,
 and essentially what this site is about.

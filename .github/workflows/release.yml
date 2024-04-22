@@ -16,4 +16,4 @@ jobs:
     needs: code
     secrets: inherit
     with:
-      publish_dir: ./docusaurus/build
+      publish_dir: ./website/dist
