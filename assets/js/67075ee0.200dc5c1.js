@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocusaurus=self.webpackChunkdocusaurus||[]).push([[990],{8450:s=>{s.exports=JSON.parse('{"label":"type-system","permalink":"/blog/tags/type-system","allTagsPath":"/blog/tags","count":1}')}}]);
