@@ -1,37 +1,29 @@
 {
-  "grammarly.overrides": [
-    {
-      "files": [
-        "**/blog/2021-03-21-what-is-functional-programming.md"
-      ],
-      "config": {
-        "audience": "general",
-        "dialect": "american",
-        "domain": "casual",
-        "emotions": [
-          "confident",
-          "joyful",
-          "friendly"
-        ],
-        "goals": [
-          "tellStory"
-        ]
-      }
-    }
-  ],
-  "cSpell.words": [
-    "astro",
-    "astrojs",
-    "Bartosz",
-    "Bauby",
-    "clsx",
-    "Hayato",
-    "Kazami",
-    "Milewski's",
-    "monoid",
-    "repobuddy",
-    "snyk",
-    "struct",
-    "tsconfigs"
-  ]
+	"grammarly.overrides": [
+		{
+			"files": ["**/blog/2021-03-21-what-is-functional-programming.md"],
+			"config": {
+				"audience": "general",
+				"dialect": "american",
+				"domain": "casual",
+				"emotions": ["confident", "joyful", "friendly"],
+				"goals": ["tellStory"]
+			}
+		}
+	],
+	"cSpell.words": [
+		"astro",
+		"astrojs",
+		"Bartosz",
+		"Bauby",
+		"clsx",
+		"Hayato",
+		"Kazami",
+		"Milewski's",
+		"monoid",
+		"repobuddy",
+		"snyk",
+		"struct",
+		"tsconfigs"
+	]
 }

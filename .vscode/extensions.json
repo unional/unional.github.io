@@ -1,19 +1,19 @@
 {
-  "recommendations": [
-    "aaron-bond.better-comments",
-    "adpyke.codesnap",
-    "astro-build.astro-vscode",
-    "bierner.emojisense",
-    "davidanson.vscode-markdownlint",
-    "dendron.dendron-paste-image",
-    "eamodio.gitlens",
-    "editorconfig.editorconfig",
-    "evilz.vscode-reveal",
-    "github.vscode-pull-request-github",
-    "mhutchie.git-graph",
-    "streetsidesoftware.code-spell-checker",
-    "unifiedjs.vscode-mdx",
-    "unional.vscode-sort-package-json",
-    "yzhang.markdown-all-in-one",
-  ]
+	"recommendations": [
+		"aaron-bond.better-comments",
+		"adpyke.codesnap",
+		"astro-build.astro-vscode",
+		"bierner.emojisense",
+		"davidanson.vscode-markdownlint",
+		"dendron.dendron-paste-image",
+		"eamodio.gitlens",
+		"editorconfig.editorconfig",
+		"evilz.vscode-reveal",
+		"github.vscode-pull-request-github",
+		"mhutchie.git-graph",
+		"streetsidesoftware.code-spell-checker",
+		"unifiedjs.vscode-mdx",
+		"unional.vscode-sort-package-json",
+		"yzhang.markdown-all-in-one"
+	]
 }

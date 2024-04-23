@@ -1,26 +1,24 @@
 {
-  "private": true,
-  "author": {
-    "name": "Homa Wong (unional)",
-    "email": "homawong@gmail.com",
-    "url": "https://github.com/unional"
-  },
-  "scripts": {
-    "build": "turbo run build",
-    "build:doc": "echo not needed",
-    "lint": "turbo run lint",
-    "d": "pnpm --filter docusaurus",
-    "docusaurus": "pnpm --filter docusaurus",
-    "a": "pnpm --filter astro",
-    "astro": "pnpm --filter astro",
-    "verify": "turbo run lint build depcheck coverage size",
-    "web": "pnpm --filter ./website"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.7.1",
-    "@repobuddy/biome": "^1.4.0",
-    "turbo": "^1.6.3",
-    "typescript": "^5.4.5"
-  },
-  "packageManager": "pnpm@9.0.5"
+	"private": true,
+	"author": {
+		"name": "Homa Wong (unional)",
+		"email": "homawong@gmail.com",
+		"url": "https://github.com/unional"
+	},
+	"scripts": {
+		"build": "turbo run build",
+		"build:doc": "echo not needed",
+		"check": "biome check .",
+		"format": "biome format .",
+		"lint": "biome lint .",
+		"verify": "turbo run lint build depcheck coverage size",
+		"web": "pnpm --filter ./website"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.7.1",
+		"@repobuddy/biome": "^1.4.0",
+		"turbo": "^1.6.3",
+		"typescript": "^5.4.5"
+	},
+	"packageManager": "pnpm@9.0.5"
 }
