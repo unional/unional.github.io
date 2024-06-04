@@ -17,7 +17,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.0",
 		"@repobuddy/biome": "^1.4.0",
-		"turbo": "^1.6.3",
+		"turbo": "^2.0.0",
 		"typescript": "^5.4.5"
 	},
 	"packageManager": "pnpm@9.1.4"
