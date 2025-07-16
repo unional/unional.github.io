@@ -27,8 +27,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0(typescript@5.4.5)
       '@astrojs/starlight':
-        specifier: ^0.34.0
-        version: 0.34.0(astro@5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5))
+        specifier: ^0.35.0
+        version: 0.35.0(astro@5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5))
       astro:
         specifier: ^5.0.0
         version: 5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5)
@@ -87,8 +87,8 @@ packages:
   '@astrojs/sitemap@3.3.0':
     resolution: {integrity: sha512-nYE4lKQtk+Kbrw/w0G0TTgT724co0jUsU4tPlHY9au5HmTBKbwiCLwO/15b1/y13aZ4Kr9ZbMeMHlXuwn0ty4Q==}
 
-  '@astrojs/starlight@0.34.0':
-    resolution: {integrity: sha512-RebhN1hoLmD/4WH0WneR2U6evEwRhwrtUcxUten9DjAZdKfCtav95kkj9aiU1manNDVBVgBliEZ9hGcOwSQXrg==}
+  '@astrojs/starlight@0.35.0':
+    resolution: {integrity: sha512-YmHSj2KkzZ2B1ST/ZMqfvctPz1nbw78kBwHF4W2BFKnDFJhCTHFDW81IByT1Dwf52f81LPs8vlOTXtxSZq6yKQ==}
     peerDependencies:
       astro: ^5.5.0
 
@@ -1415,9 +1415,6 @@ packages:
   hast-util-to-estree@3.1.0:
     resolution: {integrity: sha512-lfX5g6hqVh9kjS/B9E2gSkvHH4SZNiQFiqWS0x9fENzEl+8W12RqdRxX6d/Cwxi30tPQs3bIO+aolQJNp1bIyw==}
 
-  hast-util-to-html@9.0.4:
-    resolution: {integrity: sha512-wxQzXtdbhiwGAUKrnQJXlOPmHnEehzphwkK7aluUPQ+lEc1xefC8pblMgpp2w5ldBTEfveRIrADcrhGIWrlTDA==}
-
   hast-util-to-html@9.0.5:
     resolution: {integrity: sha512-OguPdidb+fbHQSU4Q4ZiLKnzWo8Wwsf5bZfbvu7//a9oTYoqD/fWpe96NuHkoS9h0ccGOTe0C4NGXdtS0iObOw==}
 
@@ -1932,9 +1929,6 @@ packages:
 
   remark-directive@3.0.0:
     resolution: {integrity: sha512-l1UyWJ6Eg1VPU7Hm/9tt0zKtReJQNOA4+iDMAxTyZNWnJnFlbS/7zhiel/rogTLQ2vMYwDzSJa4BiVNqGlqIMA==}
-
-  remark-gfm@4.0.0:
-    resolution: {integrity: sha512-U92vJgBPkbw4Zfu/IiW2oTZLSL3Zpv+uI7My2eq8JxKgqraFdU8YUGicEJCEgSbeaG+QDFqIcwwfMTOEelPxuA==}
 
   remark-gfm@4.0.1:
     resolution: {integrity: sha512-1quofZ2RQ9EWdeN34S79+KExV1764+wCUGop5CPL1WGdD0ocPpu91lzPGbwWMECpEpd42kJGQwzRfyov9j4yNg==}
@@ -2463,7 +2457,7 @@ snapshots:
       mdast-util-definitions: 6.0.0
       rehype-raw: 7.0.0
       rehype-stringify: 10.0.1
-      remark-gfm: 4.0.0
+      remark-gfm: 4.0.1
       remark-parse: 11.0.0
       remark-rehype: 11.1.1
       remark-smartypants: 3.0.2
@@ -2531,7 +2525,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.24.2
 
-  '@astrojs/starlight@0.34.0(astro@5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5))':
+  '@astrojs/starlight@0.35.0(astro@5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
       '@astrojs/mdx': 4.2.4(astro@5.0.8(@types/node@18.11.13)(rollup@4.28.1)(terser@5.24.0)(typescript@5.4.5))
@@ -2808,7 +2802,7 @@ snapshots:
     dependencies:
       '@ctrl/tinycolor': 4.1.0
       hast-util-select: 6.0.2
-      hast-util-to-html: 9.0.4
+      hast-util-to-html: 9.0.5
       hast-util-to-text: 4.0.2
       hastscript: 9.0.0
       postcss: 8.4.49
@@ -3148,7 +3142,7 @@ snapshots:
       '@shikijs/types': 1.24.3
       '@shikijs/vscode-textmate': 9.3.1
       '@types/hast': 3.0.4
-      hast-util-to-html: 9.0.4
+      hast-util-to-html: 9.0.5
 
   '@shikijs/core@3.2.2':
     dependencies:
@@ -3857,20 +3851,6 @@ snapshots:
       zwitch: 2.0.4
     transitivePeerDependencies:
       - supports-color
-
-  hast-util-to-html@9.0.4:
-    dependencies:
-      '@types/hast': 3.0.4
-      '@types/unist': 3.0.3
-      ccount: 2.0.1
-      comma-separated-tokens: 2.0.3
-      hast-util-whitespace: 3.0.0
-      html-void-elements: 3.0.0
-      mdast-util-to-hast: 13.2.0
-      property-information: 6.5.0
-      space-separated-tokens: 2.0.2
-      stringify-entities: 4.0.4
-      zwitch: 2.0.4
 
   hast-util-to-html@9.0.5:
     dependencies:
@@ -4742,7 +4722,7 @@ snapshots:
   rehype-stringify@10.0.1:
     dependencies:
       '@types/hast': 3.0.4
-      hast-util-to-html: 9.0.4
+      hast-util-to-html: 9.0.5
       unified: 11.0.5
 
   rehype@13.0.2:
@@ -4757,17 +4737,6 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-directive: 3.0.0
       micromark-extension-directive: 3.0.0
-      unified: 11.0.5
-    transitivePeerDependencies:
-      - supports-color
-
-  remark-gfm@4.0.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      mdast-util-gfm: 3.0.0
-      micromark-extension-gfm: 3.0.0
-      remark-parse: 11.0.0
-      remark-stringify: 11.0.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
