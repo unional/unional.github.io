@@ -15,7 +15,7 @@
 		"web": "pnpm --filter ./website"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.0",
+		"@biomejs/biome": "2.5.1",
 		"@repobuddy/biome": "^2.0.0",
 		"turbo": "^2.0.0",
 		"typescript": "^6.0.0"
