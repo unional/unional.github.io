@@ -10,7 +10,7 @@ export default defineConfig({
 			logo: {
 				light: './src/assets/uni.png',
 				dark: './src/assets/uni.png',
-				// replacesTitle: true,
+				replacesTitle: true,
 			},
 			social: [
 				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/9uYE4NRrg4' },
