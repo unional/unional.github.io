@@ -94,7 +94,6 @@ for (const [n, s] of Object.entries(wideFmt)) {
 // ---- session compounding ----------------------------------------------------
 console.log('\n=== SESSION COMPOUNDING: 40 CLI calls in one agent session ===\n')
 console.log('mix: 20 list calls (N=15), 15 detail views, 5 errors/empty states\n')
-const listN15 = (f) => tok(f)
 const mk = {
 	TOON: {
 		list: tok(
