@@ -1,0 +1,266 @@
+---
+title: The best rule in AXI is not the one it leads with
+pubDate: 2026-07-26
+---
+
+I build CLIs that agents drive.
+
+Not CLIs that happen to be scriptable — CLIs whose primary caller is a language model
+running a shell command and reading whatever comes back on stdout.
+`cyber-mux` is one of mine.
+
+That turns out to be a genuinely different design problem from building for humans,
+and [AXI](https://github.com/kunchenguid/axi) — Agent eXperience Interface — is the best
+attempt I have seen at writing down what the difference is.
+Ten rules. Output format, schema minimalism, truncation, aggregates, empty states,
+structured errors, session integration, content-first home views, contextual disclosure, help.
+
+I build against it. I think it is mostly right.
+
+I also spent a day measuring it, and I want to argue that its headline rule
+is the least valuable thing in the document,
+that two of its rules contradict each other,
+and that the gap it leaves open is somewhere else entirely.
+
+## What AXI gets right, and why it is not the format
+
+AXI's rule 4 contains the sentence the rest of the document should be read through:
+
+> The most expensive token cost is often not a longer response — it's a follow-up call.
+
+That is the whole insight.
+An agent that has to run your command twice to learn one thing
+has paid for a tool invocation, a result, a re-read of that result,
+and the reasoning to compose the second attempt.
+A slightly longer first response is nearly free by comparison.
+
+Most of AXI follows from taking that seriously.
+Include the total count so the agent does not paginate to find out.
+Say "0 closed tasks found" instead of printing nothing,
+so it does not re-run with different flags to check whether the command worked.
+Reject unknown flags loudly, and print the valid ones inline,
+so the correction takes one turn instead of two.
+Truncate long bodies but say how much you truncated,
+so the agent knows whether it is missing anything.
+
+Every one of those is a round-trip removed.
+None of them is about serialization.
+
+And yet rule 1 — the first thing you read — is a format mandate:
+use [TOON](https://toonformat.dev/) on stdout, roughly 40% cheaper than JSON.
+
+## So I measured it
+
+The published TOON benchmarks are good work.
+Thirteen datasets, 244 generated questions, four models, confidence intervals reported,
+and refreshingly candid about where TOON loses.
+
+They also do not measure anything resembling a CLI.
+Every benchmark I could find tests a single question against one large blob —
+a thousand employee records, an e-commerce order tree.
+A CLI emits fifteen rows. Then a single object. Then a two-line error.
+Then fifteen rows again, forty times in a session.
+
+So I ran it myself, with the real encoder and the same tokenizer family the official suite uses.
+
+The first question was whether TOON's advantage survives small payloads,
+since its tabular header costs a fixed twelve tokens
+and there are only three rows to amortize it over.
+
+It survives comfortably:
+
+| TOON vs      |  N=3   |  N=15  | N=1000 |
+| ------------ | ------ | ------ | ------ |
+| JSON compact | −25.8% | −35.5% | −38.2% |
+| JSON pretty  | −59.6% | −64.1% | −65.5% |
+| YAML         | −40.3% | −49.7% | −52.4% |
+| TOML         | −41.0% | −51.4% | −54.1% |
+
+The header is 26% of the output at three rows and 1% at a hundred,
+and it never once flips a comparison.
+So the rule is safe at CLI sizes. Good.
+
+Two other columns were less comfortable.
+
+| TOON vs                                 |  N=3   |  N=15  | N=1000 |
+| --------------------------------------- | ------ | ------ | ------ |
+| Markdown table                          | −16.4% | −8.3%  | −5.5%  |
+| Markdown list — `- #1 Fix auth — open` | +39.4% | +8.8%  | +2.4%  |
+| CSV                                     | +31.4% | +21.5% | +19.2% |
+
+A plain markdown bullet list is cheaper than TOON at *every* size I tested.
+Not close at three rows — 39% cheaper.
+And a markdown table, which keeps the field names, stays within 6–16%.
+
+That does not kill rule 1, but it changes what the rule is *for*.
+What TOON buys over a markdown list is not tokens.
+It is the `tasks[15]{number,title,state,assignee}:` header —
+an explicit row count and field list, which is the one thing
+the published benchmarks show TOON doing clearly better than anything else:
+detecting when output has been truncated or a field has gone missing.
+
+Which is the same guarantee rule 4 is reaching for with `count: 30 of 847 total`.
+So the honest argument for TOON is structural self-description, not compression.
+Rule 1 argues compression.
+
+## Then the two rules started fighting
+
+AXI rule 3 says detail views should include a truncated preview of long text,
+never omit it.
+Rule 1 says put everything on stdout in TOON.
+
+Here is what those two produce together, measured on a seven-field task
+with one 190-character body:
+
+| format       | tokens |
+| ------------ | -----: |
+| JSON compact |     76 |
+| Markdown KV  |     78 |
+| TOML         |     82 |
+| **TOON**     | **85** |
+| YAML         |     89 |
+| JSON pretty  |    102 |
+
+TOON is fourth of six, and 12% *worse* than the compact JSON it was supposed to beat.
+
+The cause is visible the moment you look at the output.
+TOON quotes any string containing a delimiter.
+The body contains `: `.
+So the entire body gets wrapped in quotes, and rule 3 guarantees
+that every detail view in your CLI will contain exactly such a body.
+
+Errors are worse in proportion. A real TOON encoder produces:
+
+```
+error: "--title is required"
+help: "tasks create --title \"...\" [--body \"...\"]"
+```
+
+Twenty-four tokens, with backslash-escaping an agent has to see through.
+The plain unquoted version is twenty.
+
+And here is the part I found genuinely interesting:
+**AXI's own examples are the plain version.**
+Rules 3, 5 and 6 all print unquoted `key: value` lines that no TOON encoder would emit.
+The spec is already doing the cheaper thing in its examples
+while mandating the more expensive thing in its text.
+
+So my first proposal is small and costs nothing:
+scope rule 1 to collections.
+Use TOON's tabular form for lists, where it earns 25–38% and provides the row count.
+For single objects, errors, and empty states, use plain `key: value` —
+which is cheaper, more readable, and what the document already shows.
+
+That makes the spec agree with itself.
+
+## The gap is not the format at all
+
+Here is what I actually went looking for and could not find.
+
+AXI has nothing to say about command structure.
+
+Not a word on depth. Rule 6 mentions grouped nouns in passing —
+"only the subcommand layer knows which is in play" — while validating flags,
+which quietly presumes a grouping the document never specifies.
+Rule 10 requires per-subcommand `--help`.
+That is it.
+
+This matters because command depth is the one place a CLI *forces* the round-trip
+that rule 4 exists to eliminate.
+An agent that does not already know your tool must spend one invocation per level
+to find out what exists. `mytool --help`, then `mytool tasks --help`,
+then `mytool tasks list --help`.
+Three turns before it has run anything.
+
+The nearest measurement I found is ETOM, a five-level benchmark
+for tool orchestration across MCP namespaces.
+Accuracy declines with namespace depth *and* with breadth, and the two compound.
+That is tool namespaces rather than subcommand trees, so it is an analogy —
+but it points the same direction as every practitioner writeup I read.
+
+So, two proposals.
+
+**Shallow groups.**
+`noun verb` — `tasks list`, `tasks create`.
+Two levels is the target, three is the ceiling.
+Prefer a flag over a level: if a third level only selects among variants of one action,
+it is a flag, and `tasks list --archived` beats `tasks archived list`.
+Keep verbs consistent across nouns, so an agent that learned `tasks list`
+can guess `labels list` and be right.
+Watch breadth too — if one noun has more than a dozen verbs, it is two nouns.
+
+**A one-shot surface manifest.**
+`--help` is a per-command lookup, and walking a tree with it costs a turn per node.
+Ship `mytool schema` that prints the entire surface in one call —
+every command path, its arguments, its flags with required ones marked, its exit codes:
+
+```
+$ mytool schema
+commands[4]{path,summary,args,flags,exit}:
+  tasks list,List tasks,,--state --assignee --limit,0|2
+  tasks view,Show one task,<id>,--full --fields,0|1|2
+  tasks create,Create a task,,--title* --body,0|2
+  labels list,List labels,,--limit,0|2
+```
+
+Generated from the parser, so it cannot drift from what the CLI actually dispatches.
+And deliberately *not* in the session-start hook —
+AXI rule 7 is right that ambient context must stay minimal,
+and tool definitions bloating past 50,000 tokens before an agent reads the request
+is already a documented failure mode elsewhere.
+Mention it in the home view's hints and let the agent pull it when it needs it.
+
+There is a third proposal, about rule 9,
+which turned out to be an argument about hypermedia and deserved
+[its own post](/architecture/2026-07-26-hateoas-was-waiting-for-agents/).
+Short version: rule 9 suggests next commands by *relevance*,
+and it should prune them by *validity* —
+a closed task's response should not offer to close it.
+That saves a failed mutation rather than a help lookup.
+
+## What I would tell someone adopting AXI
+
+Implement it in this order, which is roughly inverse to the document's own:
+
+1. Aggregates and counts, definitive empty states, loud unknown-flag errors with the valid flags inline.
+   These are the round-trip eliminations and they are the entire point.
+2. Truncation with the size disclosed.
+3. Content-first home view, so a bare invocation shows state rather than a manual.
+4. Then the output format.
+
+The format still matters — over forty calls in one session, TOON saved me
+1,845 tokens against compact JSON and 7,145 against pretty JSON,
+which at a rough 600 tokens per avoided round-trip is worth about three
+and twelve saved turns respectively.
+
+That is real. I had initially assumed it would be negligible next to turn elimination
+and I was wrong about that, at least against pretty JSON.
+
+But it is a 26% saving on a thing you emit,
+whereas rule 4 is about not emitting a thing at all.
+
+## What I did not measure
+
+Tokens only.
+Nothing here tests whether an agent *reads* any of these formats more correctly,
+and on that question the published evidence is genuinely muddled —
+TOON's own suite has it statistically tied with JSON overall,
+and ranking last on field retrieval, which is the operation
+an agent performs most on CLI output.
+A separate eleven-format study found the opposite ordering,
+with the *most* redundant formats winning on retrieval.
+
+I also used a GPT tokenizer rather than a Claude one.
+The ordering should transfer. The absolute numbers will not.
+
+And the validity-pruning claim in the other post is reasoning, not data.
+It is testable — count failed mutation attempts with and without it —
+and I have not done it yet.
+
+Which is roughly the state of the whole field.
+We have one spec worth arguing with,
+a format whose benchmarks do not cover the case most people are using it for,
+and almost no measurement of the thing that actually costs money, which is turns.
+
+Arguing with the spec seems like the useful move.
+The three proposals are written up; I intend to take them upstream.
