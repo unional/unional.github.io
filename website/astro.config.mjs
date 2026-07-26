@@ -3,6 +3,12 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
+	// posts that moved out of architecture/ when categories were split up.
+	// keep these forever; the old URLs have been linked to since 2021.
+	redirects: {
+		'/architecture/2021-04-10-structural-type-and-function-overload':
+			'/typescript/2021-04-10-structural-type-and-function-overload',
+	},
 	integrations: [
 		starlight({
 			title: 'unional blog',
@@ -23,8 +29,16 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'about_me' } }],
 				},
 				{
+					label: 'Agents',
+					items: [{ autogenerate: { directory: 'agents' } }],
+				},
+				{
 					label: 'Architecture',
 					items: [{ autogenerate: { directory: 'architecture' } }],
+				},
+				{
+					label: 'TypeScript',
+					items: [{ autogenerate: { directory: 'typescript' } }],
 				},
 			],
 		}),
