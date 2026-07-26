@@ -92,7 +92,7 @@ The header is 26% of the output at three rows and 1% at a hundred,
 and it never once flips a comparison.
 So the rule is safe at CLI sizes. Good.
 
-Two other columns were less comfortable.
+Two other columns were more interesting.
 
 | TOON vs                                 |  N=3   |  N=15  | N=1000 |
 | --------------------------------------- | ------ | ------ | ------ |
@@ -104,25 +104,32 @@ A plain markdown bullet list is cheaper than TOON at *every* size I tested.
 Not close at three rows — 39% cheaper.
 And a markdown table, which keeps the field names, stays within 6–16%.
 
-That does not kill rule 1, but it changes what the rule is *for*.
-What TOON buys over a markdown list is not tokens.
+This does not undercut rule 1. It gives it a better argument.
+
+What TOON buys over a markdown list was never really tokens.
 It is the `tasks[15]{number,title,state,assignee}:` header —
 an explicit row count and field list, which is the one thing
-the published benchmarks show TOON doing clearly better than anything else:
+the published benchmarks show TOON doing clearly better than everything else:
 detecting when output has been truncated or a field has gone missing.
 
-Which is the same guarantee rule 4 is reaching for with `count: 30 of 847 total`.
-So the honest argument for TOON is structural self-description, not compression.
-Rule 1 argues compression.
+Which is precisely the guarantee rule 4 is reaching for with `count: 30 of 847 total`.
+The two rules are after the same property, and TOON is the only format
+that provides it for free on every response.
 
-## Then the two rules started fighting
+That is a stronger case than compression, and it is the one I would put in the text.
+Compression is a nice side effect that happens to be smaller than advertised
+against the formats nobody thought to compare with.
 
-AXI rule 3 says detail views should include a truncated preview of long text,
-never omit it.
+## Rule 3 points at where rule 1 should stop
+
+The nicest thing about a spec with ten specific rules
+is that the rules can be checked against each other.
+
+Rule 3 says detail views should include a truncated preview of long text, never omit it.
 Rule 1 says put everything on stdout in TOON.
+Run both and you get a measurable answer about where the format boundary belongs.
 
-Here is what those two produce together, measured on a seven-field task
-with one 190-character body:
+Measured on a seven-field task with one 190-character body:
 
 | format       | tokens |
 | ------------ | -----: |
@@ -133,15 +140,18 @@ with one 190-character body:
 | YAML         |     89 |
 | JSON pretty  |    102 |
 
-TOON is fourth of six, and 12% *worse* than the compact JSON it was supposed to beat.
+TOON lands fourth of six, 12% above compact JSON.
 
-The cause is visible the moment you look at the output.
-TOON quotes any string containing a delimiter.
-The body contains `: `.
-So the entire body gets wrapped in quotes, and rule 3 guarantees
-that every detail view in your CLI will contain exactly such a body.
+And this is not TOON underperforming — it is TOON being used outside the niche
+its own documentation claims.
+The format's README is explicit that compact JSON often wins
+where there is nothing tabular to factor, and a single object is exactly that case.
+TOON quotes any string containing a delimiter, the body contains `: `,
+so the whole body gets wrapped — and rule 3 guarantees
+every detail view in your CLI will contain such a body.
 
-Errors are worse in proportion. A real TOON encoder produces:
+So the two rules together tell you where the boundary is.
+Errors make the same point more sharply. A real TOON encoder produces:
 
 ```
 error: "--title is required"
@@ -151,33 +161,36 @@ help: "tasks create --title \"...\" [--body \"...\"]"
 Twenty-four tokens, with backslash-escaping an agent has to see through.
 The plain unquoted version is twenty.
 
-And here is the part I found genuinely interesting:
-**AXI's own examples are the plain version.**
+And here is my favourite thing I found all day:
+**AXI's own examples already do it the cheaper way.**
 Rules 3, 5 and 6 all print unquoted `key: value` lines that no TOON encoder would emit.
-The spec is already doing the cheaper thing in its examples
-while mandating the more expensive thing in its text.
 
-So my first proposal is small and costs nothing:
+Whoever wrote those examples had the right instinct.
+The text simply has not caught up with them yet,
+which makes this the easiest possible improvement to land.
+
+So the first proposal is small and costs nothing:
 scope rule 1 to collections.
-Use TOON's tabular form for lists, where it earns 25–38% and provides the row count.
+Use TOON's tabular form for lists, where it earns 25–38% and hands you the row count.
 For single objects, errors, and empty states, use plain `key: value` —
-which is cheaper, more readable, and what the document already shows.
+cheaper, more readable, and already what the document shows.
 
-That makes the spec agree with itself.
+Ten rules, and two of them together pin down a boundary
+that neither of them states alone. That is a spec doing its job.
 
-## The gap is not the format at all
+## The biggest opportunity is command structure
 
-Here is what I actually went looking for and could not find.
+The rules AXI has are good. The interesting question is what it has not reached yet.
 
-AXI has nothing to say about command structure.
+Command structure, as far as I can tell, is the big one.
 
-Not a word on depth. Rule 6 mentions grouped nouns in passing —
+Rule 6 mentions grouped nouns in passing —
 "only the subcommand layer knows which is in play" — while validating flags,
-which quietly presumes a grouping the document never specifies.
+which presumes a grouping the document has not specified.
 Rule 10 requires per-subcommand `--help`.
-That is it.
+The scaffolding is there; the rule that would sit on top of it is not written yet.
 
-This matters because command depth is the one place a CLI *forces* the round-trip
+It is worth writing, because command depth is the one place a CLI *forces* the round-trip
 that rule 4 exists to eliminate.
 An agent that does not already know your tool must spend one invocation per level
 to find out what exists. `mytool --help`, then `mytool tasks --help`,
@@ -232,7 +245,8 @@ That saves a failed mutation rather than a help lookup.
 
 ## What I would tell someone adopting AXI
 
-Implement it in this order, which is roughly inverse to the document's own:
+Adopt all ten rules. If you are staging the work,
+rule 4 tells you how to order it — biggest round-trip saving first:
 
 1. Aggregates and counts, definitive empty states, loud unknown-flag errors with the valid flags inline.
    These are the round-trip eliminations and they are the entire point.
@@ -245,11 +259,14 @@ The format still matters — over forty calls in one session, TOON saved me
 which at a rough 600 tokens per avoided round-trip is worth about three
 and twelve saved turns respectively.
 
-That is real. I had initially assumed it would be negligible next to turn elimination
-and I was wrong about that, at least against pretty JSON.
+That is real, and larger than I expected.
+I had assumed the format would be a rounding error next to turn elimination,
+and against pretty JSON it clearly is not.
+Rule 1 earns its place.
 
-But it is a 26% saving on a thing you emit,
-whereas rule 4 is about not emitting a thing at all.
+It is still a 26% saving on a thing you emit,
+where rule 4 is about not emitting the thing at all —
+which is why I would reach for rule 4 first, not instead.
 
 ## What I did not measure
 
@@ -269,10 +286,16 @@ And the validity-pruning claim in the other post is reasoning, not data.
 It is testable — count failed mutation attempts with and without it —
 and I have not done it yet.
 
-Which is roughly the state of the whole field.
-We have one spec worth arguing with,
-a format whose benchmarks do not cover the case most people are using it for,
-and almost no measurement of the thing that actually costs money, which is turns.
+None of which changes the headline: AXI is the document I would hand someone
+building their first agent-facing CLI, and I have not found a better one.
 
-Arguing with the spec seems like the useful move.
-The three proposals are written up; I intend to take them upstream.
+What it gives you that a blog post cannot is something specific enough to test.
+A spec vague enough to agree with is a spec you cannot measure,
+and every finding above exists because ten rules were concrete enough
+to point an encoder and a tokenizer at.
+
+Three proposals came out of the day: scope rule 1 to collections,
+add shallow command groups, add a one-shot surface manifest.
+I am taking them upstream.
+Contributing to a spec that is mostly right seems like a better use of an afternoon
+than writing a competing one.
