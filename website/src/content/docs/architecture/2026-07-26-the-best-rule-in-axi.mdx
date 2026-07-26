@@ -22,19 +22,19 @@ is the least valuable thing in the document,
 that two of its rules contradict each other,
 and that the gap it leaves open is somewhere else entirely.
 
-## What AXI gets right, and why it is not the format
+## What AXI gets right
 
-AXI's rule 4 contains the sentence the rest of the document should be read through:
+AXI's rule 4 contains the sentence the whole document deserves to be read through:
 
 > The most expensive token cost is often not a longer response — it's a follow-up call.
 
-That is the whole insight.
+That is the insight, and it is the right one.
 An agent that has to run your command twice to learn one thing
 has paid for a tool invocation, a result, a re-read of that result,
 and the reasoning to compose the second attempt.
 A slightly longer first response is nearly free by comparison.
 
-Most of AXI follows from taking that seriously.
+Once you have that sentence, most of the spec writes itself — and AXI writes it well.
 Include the total count so the agent does not paginate to find out.
 Say "0 closed tasks found" instead of printing nothing,
 so it does not re-run with different flags to check whether the command worked.
@@ -42,12 +42,24 @@ Reject unknown flags loudly, and print the valid ones inline,
 so the correction takes one turn instead of two.
 Truncate long bodies but say how much you truncated,
 so the agent knows whether it is missing anything.
+Show live state on a bare invocation instead of a usage manual.
 
-Every one of those is a round-trip removed.
-None of them is about serialization.
+Every one of those is a round-trip removed, and I have not found a better list anywhere.
+They are also the rules that survived contact with my own tooling unchanged,
+which is the strongest thing I can say about a spec.
 
-And yet rule 1 — the first thing you read — is a format mandate:
+So this is not a post about what AXI got wrong.
+It is a post about the one rule that is newer than the others and still moving.
+
+Rule 1 — the front door — is a format mandate:
 use [TOON](https://toonformat.dev/) on stdout, roughly 40% cheaper than JSON.
+It is a good rule with a real number behind it.
+It is also the rule with the most headroom,
+because the number comes from benchmarks built for a different shape of data than a CLI emits,
+and nobody has checked what happens when you point it at ours.
+
+That seemed worth checking. Sharpening one rule is a cheap way to improve a spec
+that is otherwise in good shape.
 
 ## So I measured it
 
