@@ -12,19 +12,19 @@ export default defineConfig({
 				dark: './src/assets/uni.png',
 				// replacesTitle: true,
 			},
-			social: {
-				discord: 'https://discord.gg/9uYE4NRrg4',
-				github: 'https://github.com/unional',
-				'x.com': 'https://x.com/Unional',
-			},
+			social: [
+				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/9uYE4NRrg4' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/unional' },
+				{ icon: 'x.com', label: 'X', href: 'https://x.com/Unional' },
+			],
 			sidebar: [
 				{
 					label: 'About Me',
-					autogenerate: { directory: 'about_me' },
+					items: [{ autogenerate: { directory: 'about_me' } }],
 				},
 				{
 					label: 'Architecture',
-					autogenerate: { directory: 'architecture' },
+					items: [{ autogenerate: { directory: 'architecture' } }],
 				},
 			],
 		}),
