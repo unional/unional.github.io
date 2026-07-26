@@ -106,7 +106,93 @@ help[1]: Run `tasks <command> --help` for flag defaults and examples
 
 ---
 
-## Third amendment, not requested — flagged for a separate decision
+## Amendment 3 — replace §9 with state-conditional, typed affordances
+
+Rewrites **§9 Contextual disclosure**. Keeps its three best rules (parameterized values, omit when
+self-contained, resolve errors) and changes the framing from *relevance* to *validity*.
+
+Rationale: HATEOAS's actual constraint was never "include links" — it was that a representation
+advertises only the state transitions legal from the current state. A closed task's representation omits
+its `close` link. §9 currently ranks suggestions by relevance ("after an open item → suggest closing"),
+which saves the agent a `--help` lookup. Pruning by validity saves an entire *failed mutation* — command
+run, error returned, error parsed, retry. Per §4 that failed attempt is the expensive unit.
+
+Second change: typed relations. §9's `help[]` is prose the agent must read and interpret. A fixed `rel`
+vocabulary is something it can match deterministically — the same argument §6 already makes for
+self-correcting errors, extended to the happy path.
+
+Confidence: **reasoning only, unmeasured.** HATEOAS has a poor track record with hand-written clients,
+for reasons that do not transfer to an LLM (see the blog post for the argument). The pruning claim is
+testable by counting failed-mutation attempts with and without state-conditional `next[]`.
+
+````markdown
+## 9. State-conditional affordances
+
+Each response advertises the commands that are valid **from the state it just reported** — not the
+tool's whole surface, and not what was valid a moment ago.
+
+Omission carries information. If a task is closed, `close` does not appear. The agent cannot form an
+invalid intent because the invalid intent was never offered, and you have saved a whole failed
+mutation — which per §4 is the expensive unit, not the longer response.
+
+```
+$ tasks view 42
+task:
+  number: 42
+  title: Fix auth bug
+  state: open
+  checks: 3/3 passed
+next[3]{rel,cmd}:
+  close,tasks close 42
+  comment,tasks comment 42 --body "<text>"
+  collection,tasks list --state open
+```
+
+```
+$ tasks close 42
+task: #42 closed
+next[2]{rel,cmd}:
+  reopen,tasks reopen 42
+  collection,tasks list --state open
+```
+
+`close` is gone from the second response. That is the point.
+
+Rules:
+
+- **Typed relations, not prose.** Use a small fixed `rel` vocabulary — `self`, `item`, `collection`,
+  `next`, `create`, `edit`, `retry`, plus your domain's verbs. An agent matches `rel=retry` deterministically;
+  it has to interpret "you might want to try again". Keep the vocabulary stable across commands: the
+  same relation means the same thing everywhere.
+- **Two columns, no link objects.** `rel` and `cmd`. Resist the HAL/JSON:API habit of `href` + `method` +
+  `templated` + `title` — this envelope re-enters the agent's context on *every* call and there is no
+  HTTP cache to amortize it. Per §7, weight is the thing that kills ambient structure.
+- **Reflect state, not schema.** The list comes from the entity you just returned, not from a static table
+  of what the command *can* emit. If a mutation changed what is possible, the mutation's own response is
+  where the agent should learn that.
+- **Parameterize dynamic values.** Use `<id>`, `"<title>"`, `<branch>` rather than guessing a concrete
+  value that may mislead. Carry forward any disambiguating flags from the current invocation (`--repo`,
+  `--source`).
+- **Omit when self-contained.** A detail view that fully answers the question, a count, a confirmation
+  that ends the workflow — suggestions there are noise. An agent that already knows what it wants must
+  never be nudged into an extra step.
+- **Resolve errors.** On failure, name the command that fixes the problem, not `--help`. A `rel=retry`
+  affordance on a transient failure is unambiguous in a way an English hint is not.
+- **Never let pruning hide a valid action.** Agents read a complete-looking list as *the* action space
+  and may stop looking. If you are not certain a transition is illegal, list it — a wrong omission is a
+  worse failure than a redundant hint. When in doubt, include.
+- **Affordances are for exploring, not executing.** An agent that pulled `mytool schema` (§10) already
+  knows your surface and will ignore `next[]`. That is correct: hypermedia optimizes discovery, the
+  manifest optimizes execution. Ship both.
+````
+
+**Interaction with §6.** §6's idempotent-mutation rule (closing a closed task exits 0 with a no-op)
+currently *absorbs* the failure this amendment *prevents*. Both should stay — §9 stops the well-informed
+agent from trying, §6 keeps the uninformed one from derailing.
+
+---
+
+## Fourth amendment, not requested — flagged for a separate decision
 
 My own measurement (see `measurement.md`) found §1's TOON mandate is net-negative on two of the four
 output shapes AXI itself describes:
