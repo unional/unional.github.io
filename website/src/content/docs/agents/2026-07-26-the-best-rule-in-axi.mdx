@@ -36,12 +36,13 @@ so here they are first, as the spec states them:
 
 I build against all ten. I think they are mostly right.
 
-I also spent a day measuring them, and I came out with three proposals:
-scope rule 1 to collections, disclose command structure only at the node the agent
-is standing on, and prune rule 9's suggestions by validity rather than relevance.
+I also spent a day measuring them, and I came out building three of them
+differently from what the document says: TOON only for collections,
+command structure disclosed only at the node the agent is standing on,
+and next-step suggestions pruned by validity rather than relevance.
 
-But the proposals only make sense if you know what they are proposals *against*,
-so let me start with why the document is worth improving rather than replacing.
+A departure only makes sense if you know what it departs *from*,
+so let me start with why the document is worth building against at all.
 
 ## What AXI gets right
 
@@ -73,7 +74,7 @@ Two more things it gets right that are easy to miss.
 
 Rule 7 says ambient context must stay minimal — install a session integration,
 then offer the details as an on-demand skill rather than loading everything up front.
-That is the correct instinct, and it is going to matter a lot in the second proposal below.
+That is the correct instinct, and it is going to matter a lot in the second departure below.
 
 And rule 2 is stricter than it looks. Three to four fields per list item
 sounds like a style preference until you multiply it by row count and session length.
@@ -82,7 +83,7 @@ Every field you add to a default list schema is a tax on every list call the age
 So this is not a post about what AXI got wrong.
 It is a post about the rules that are newer than the others and still moving.
 
-## Proposal 1 — scope rule 1 to collections
+## What I build: TOON for collections, plain keys for everything else
 
 Rule 1 — the front door — is a format mandate:
 use [TOON](https://toonformat.dev/) on stdout, roughly 40% cheaper than JSON.
@@ -232,15 +233,15 @@ Whoever wrote those examples had the right instinct.
 The text simply has not caught up with them yet,
 which makes this the easiest possible improvement to land.
 
-**The proposal.** Scope rule 1 to collections.
-Use TOON's tabular form for lists, where it earns 25–38% and hands you the row count.
-For single objects, errors, and empty states, use plain `key: value` —
+So that is where I put the boundary.
+TOON's tabular form for collections, where it earns 25–38% and hands you the row count.
+Plain `key: value` for single objects, errors, and empty states —
 cheaper, more readable, and already what the document shows.
 
 Ten rules, and two of them together pin down a boundary
 that neither of them states alone. That is a spec doing its job.
 
-## Proposal 2 — disclose at the node, never wider
+## What I build: disclosure scoped to the node, never wider
 
 The rules AXI has are good. The interesting question is what it has not reached yet.
 
@@ -415,7 +416,7 @@ optional flags stay one call away, at the node that owns them.
 `mytool pane list` does not — it asked a specific question and got an answer.
 Attach the block to the bare node, not to every command in the tool.
 
-### The proposal
+### The three rules that fall out
 
 Three rules, and the same sentence under all of them:
 **nothing is disclosed at a scope wider than the node the agent is standing on.**
@@ -452,9 +453,9 @@ So the rule is not "go flat" and it is not "one call to learn the surface."
 The enemy was **disclosure wider than the question**,
 whether that arrives as a mandatory tree walk or as a manifest nobody asked for.
 
-## Proposal 3 — prune next steps by validity, not relevance
+## What I build: suggestions pruned by validity, not relevance
 
-The previous proposal put the node's own verbs into the node's response.
+The previous section put the node's own verbs into the node's response.
 This one is about what happens to that block once the response
 is about a specific object rather than a level.
 
@@ -487,7 +488,7 @@ the short version is that this is the HATEOAS constraint,
 that it failed for twenty years because no client could improvise against an unfamiliar link,
 and that an LLM is exactly the client it was waiting for.
 
-Fair warning: unlike the first proposal, this one is reasoning rather than data.
+Fair warning: unlike the other two, this one is reasoning rather than data.
 
 ## What I would tell someone adopting AXI
 
@@ -561,8 +562,11 @@ A spec vague enough to agree with is a spec you cannot measure,
 and every finding above exists because ten rules were concrete enough
 to point an encoder and a tokenizer at.
 
-Three proposals came out of the day: scope rule 1 to collections,
-disclose at the node and never wider, prune suggestions by validity.
-I am taking them upstream.
+Three things came out of the day that I now build differently:
+TOON only for collections, disclosure scoped to the node,
+suggestions pruned by validity.
+
+None of them is a fork. They are what ten concrete rules let me find by measuring,
+and I am writing them up for upstream.
 Contributing to a spec that is mostly right seems like a better use of an afternoon
 than writing a competing one.
