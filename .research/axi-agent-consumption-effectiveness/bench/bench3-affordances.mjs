@@ -15,19 +15,19 @@ const panes = {
 const data = encode(panes)
 
 // affordance block, three levels of detail
-const namesOnly = 'commands[5]: pane-view, pane-send-keys, pane-kill, pane-resize, pane-split'
-const namesArgs = `commands[5]{name,args}:
-  pane-view,<id>
-  pane-send-keys,<id> <keys>
-  pane-kill,<id>
-  pane-resize,<id> <cols> <rows>
-  pane-split,<id> --horizontal|--vertical`
-const full = `commands[5]{name,summary,args,flags,exit}:
-  pane-view,Show one pane,<id>,--full --fields,0|1|2
-  pane-send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
-  pane-kill,Kill a pane,<id>,--force,0|1|2
-  pane-resize,Resize a pane,<id> <cols> <rows>,,0|1|2
-  pane-split,Split a pane,<id>,--horizontal --vertical,0|1|2`
+const namesOnly = 'commands[5]: pane view, pane send-keys, pane kill, pane resize, pane split'
+const namesArgs = `commands[5]{path,args}:
+  pane view,<id>
+  pane send-keys,<id> <keys>
+  pane kill,<id>
+  pane resize,<id> <cols> <rows>
+  pane split,<id> --horizontal|--vertical`
+const full = `commands[5]{path,summary,args,flags,exit}:
+  pane view,Show one pane,<id>,--full --fields,0|1|2
+  pane send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
+  pane kill,Kill a pane,<id>,--force,0|1|2
+  pane resize,Resize a pane,<id> <cols> <rows>,,0|1|2
+  pane split,Split a pane,<id>,--horizontal --vertical,0|1|2`
 
 const rows = [
 	['live data only (no affordances)', data],

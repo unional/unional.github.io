@@ -18,15 +18,15 @@ const NOUNS = {
 	plugin: ['list', 'install', 'remove', 'update'],
 }
 
-const row = (noun, verb) => `  ${noun}-${verb},${verb} a ${noun},<id>,--format --quiet --limit,0|1|2`
+const row = (noun, verb) => `  ${noun} ${verb},${verb} a ${noun},<id>,--format --quiet --limit,0|1|2`
 
 const slice = (noun) => {
 	const verbs = NOUNS[noun]
-	return `commands[${verbs.length}]{name,summary,args,flags,exit}:\n` + verbs.map((v) => row(noun, v)).join('\n')
+	return `commands[${verbs.length}]{path,summary,args,flags,exit}:\n` + verbs.map((v) => row(noun, v)).join('\n')
 }
 
 const all = Object.entries(NOUNS).flatMap(([n, vs]) => vs.map((v) => row(n, v)))
-const full = `commands[${all.length}]{name,summary,args,flags,exit}:\n${all.join('\n')}`
+const full = `commands[${all.length}]{path,summary,args,flags,exit}:\n${all.join('\n')}`
 
 const fullTok = tok(full)
 const sliceToks = Object.keys(NOUNS).map((n) => [n, tok(slice(n))])

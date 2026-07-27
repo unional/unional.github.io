@@ -260,7 +260,7 @@ to find out what exists. `mytool --help`, then `mytool tasks --help`,
 then `mytool tasks list --help`.
 Three turns before it has run anything.
 
-### The flat answer, and the MCP argument for it
+### The flat answer, and where its best argument fails
 
 The obvious fix is to delete the levels.
 `mytool send-keys` instead of `mytool send keys`.
@@ -337,10 +337,10 @@ full signatures for every one:
 
 | disclosure                     | tokens |
 | ------------------------------ | -----: |
-| the whole surface              |   1542 |
-| one resource, on its own       |    140 |
-| the largest resource (`pane`)  |    253 |
-| **every resource, one by one** | **1685** |
+| the whole surface              |   1519 |
+| one resource, on its own       |    139 |
+| the largest resource (`pane`)  |    248 |
+| **every resource, one by one** | **1662** |
 
 A resource slice is eleven times smaller than the surface it belongs to.
 And the last row is the one that settles it:
@@ -360,10 +360,10 @@ which is the same facts twice and two things to keep in sync:
 
 ```
 $ mytool pane --help
-commands[10]{name,summary,args,flags,exit}:
-  pane-list,List panes,,--session --format --limit,0|2
-  pane-view,Show one pane,<id>,--full --fields,0|1|2
-  pane-send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
+commands[10]{path,summary,args,flags,exit}:
+  pane list,List panes,,--session --format --limit,0|2
+  pane view,Show one pane,<id>,--full --fields,0|1|2
+  pane send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
   ...
 ```
 
@@ -389,17 +389,17 @@ panes[4]{id,title,cmd,active}:
   2,server,pnpm dev,false
   3,tests,vitest --watch,false
   4,shell,zsh,false
-commands[5]{name,args}:
-  pane-view,<id>
-  pane-send-keys,<id> <keys>
-  pane-kill,<id>
-  pane-resize,<id> <cols> <rows>
-  pane-split,<id> --horizontal|--vertical
+commands[5]{path,args}:
+  pane view,<id>
+  pane send-keys,<id> <keys>
+  pane kill,<id>
+  pane resize,<id> <cols> <rows>
+  pane split,<id> --horizontal|--vertical
 ```
 
 Measured on a smaller five-verb node than the table above:
-the command block costs 58 tokens on a 52-token response.
-The `pane --help` it saves costs 126 tokens *and* a round trip —
+the command block costs 55 tokens on a 52-token response.
+The `pane --help` it saves costs 123 tokens *and* a round trip —
 call that 600, and the fold pays for itself unless the agent
 returns to the same bare node a dozen times in one session.
 Orienting takes one visit, sometimes three.
@@ -407,8 +407,8 @@ Orienting takes one visit, sometimes three.
 Two details decide whether it stays cheap.
 
 **Names and required arguments, not signatures.**
-Names alone are 24 tokens but do not tell the agent how to invoke anything,
-so it buys the help call back. Full signatures are 127 and duplicate `--help`.
+Names alone are 21 tokens but do not tell the agent how to invoke anything,
+so it buys the help call back. Full signatures are 124 and duplicate `--help`.
 Names with required arguments are enough to act on;
 optional flags stay one call away, at the node that owns them.
 
@@ -469,7 +469,7 @@ What it should do is filter them by *validity*:
 offer only the commands that will actually succeed against the object just returned.
 
 A closed task's response should not offer to close it.
-A pane that is already dead should not come back with `pane-send-keys` in its hints.
+A pane that is already dead should not come back with `pane send-keys` in its hints.
 
 The difference matters because of what each one saves.
 An irrelevant-but-valid suggestion costs the agent a moment of ranking.
