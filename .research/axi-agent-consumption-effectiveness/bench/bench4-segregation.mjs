@@ -6,7 +6,7 @@ const tok = (s) => tokenize(s).length
 const NOUNS = {
 	session: ['list', 'view', 'new', 'kill', 'rename', 'attach', 'detach', 'switch'],
 	window: ['list', 'view', 'new', 'kill', 'rename', 'move', 'select', 'swap', 'link'],
-	pane: ['list', 'view', 'split', 'kill', 'resize', 'select', 'swap', 'send-keys', 'capture', 'respawn'],
+	pane: ['list', 'view', 'split', 'kill', 'resize', 'select', 'swap', 'send keys', 'capture', 'respawn'],
 	layout: ['list', 'apply', 'save', 'next', 'previous'],
 	buffer: ['list', 'view', 'set', 'delete', 'paste', 'save'],
 	key: ['list', 'bind', 'unbind', 'send'],
