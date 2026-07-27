@@ -259,15 +259,14 @@ to find out what exists. `mytool --help`, then `mytool tasks --help`,
 then `mytool tasks list --help`.
 Three turns before it has run anything.
 
-### The obvious fix is flat, and the obvious argument for it is wrong
+### Flat commands, and the MCP argument for them
 
 `mytool send-keys` instead of `mytool send keys`.
 One `--help`, the whole surface, no tree to walk.
 It is also what MCP does — a flat list of tools, no nesting, every definition disclosed up front —
 and MCP is the most widely deployed agent-facing interface there is.
 
-The appeal to MCP is the weak part, and it is worth taking seriously
-because it is the first thing anyone reaches for.
+That last clause is the argument everyone reaches for, and it is the one that fails.
 
 MCP is the natural experiment in "flat, disclose everything at once,"
 and the published result is that it breaks. From Anthropic's tool search documentation:
@@ -278,11 +277,11 @@ and the published result is that it breaks. From Anthropic's tool search documen
 > Claude's ability to pick the right tool degrades once you exceed 30–50 available tools.
 
 Their threshold for "stop disclosing up front" is **ten tools**.
-The fix that shipped was deferred loading plus search over the catalogue —
-which is to say, MCP spent a year discovering that dumping your entire surface
-into the context on every request is not free.
+The fix that shipped was deferred loading plus search over the catalogue.
+Dumping your entire surface into the context on every request is not free,
+and MCP is where that got found out.
 
-So "be like MCP" is advice to reproduce a failure mode that MCP itself has already retreated from.
+So "be like MCP" is advice to reproduce a failure mode MCP has already retreated from.
 It also contradicts rule 7, which is right that ambient context must stay minimal.
 A 170-command `--help` is ambient context by another name.
 
@@ -292,9 +291,9 @@ Accuracy declines with namespace depth *and* with breadth, and the two compound.
 That is tool namespaces rather than subcommand trees, so it is an analogy —
 but it points the same direction, and it is the reason flat-and-huge is not a free win.
 
-### What survived
+### What MCP actually changed
 
-Here is the part worth keeping. MCP's fix was not nesting.
+MCP's fix was not nesting.
 It was flat names plus on-demand loading, with this guidance on naming:
 
 > Use consistent namespacing in tool names: prefix by service or resource
@@ -308,19 +307,22 @@ It is **forced progressive discovery** versus **one-call discovery**.
 Nesting only costs turns if there is no way to see the surface in one shot.
 Flatness only helps if the flat list does not itself become the context problem.
 
-Two things do genuinely favour flat once discovery is handled separately:
+Two things still favour flat once discovery is handled separately.
 
-- **Flag scope stops being ambiguous.** Rule 6's complaint that
-  "only the subcommand layer knows which is in play" is a problem that only exists
-  because there are layers. Flat deletes it rather than specifying around it.
-- **It matches what you are wrapping.** tmux is flat — `send-keys`, `new-session`, `list-panes`.
-  A wrapper that regroups those into a tree makes the agent hold two mental models
-  of the same surface for no gain.
+**Flag scope stops being ambiguous.**
+Rule 6's complaint that "only the subcommand layer knows which is in play"
+is a problem that exists because there are layers.
+Flat deletes it rather than specifying around it.
 
-One caveat on naming, and it is not cosmetic.
+**It matches what you are wrapping.**
+tmux is flat — `send-keys`, `new-session`, `list-panes`.
+A wrapper that regroups those into a tree makes the agent hold
+two mental models of the same surface for no gain.
+
+Naming matters more here than it looks.
 Verb-first names scatter related commands across an alphabetical `--help`;
-noun-first clusters them, which is the entire point of the prefix guidance above.
-tmux is inconsistent here — `send-keys` but `list-panes` — and it is the thing people trip on.
+noun-first clusters them, which is the point of the prefix guidance above.
+tmux is inconsistent about this — `send-keys` but `list-panes` — and it is what people trip on.
 If you go flat, go noun-first and stay there: `pane-send-keys`, `pane-list`, `session-new`.
 
 ### The proposal
