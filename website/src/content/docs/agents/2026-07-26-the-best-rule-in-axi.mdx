@@ -7,15 +7,36 @@ I build CLIs that agents drive.
 
 Not CLIs that happen to be scriptable — CLIs whose primary caller is a language model
 running a shell command and reading whatever comes back on stdout.
-`cyber-mux` is one of mine.
+[`cyber-mux`](https://github.com/cyberuni/cyber-mux) is one of mine.
 
 That turns out to be a genuinely different design problem from building for humans,
 and [AXI](https://github.com/kunchenguid/axi) — Agent eXperience Interface — is the best
 attempt I have seen at writing down what the difference is.
-Ten rules. Output format, schema minimalism, truncation, aggregates, empty states,
-structured errors, session integration, content-first home views, contextual disclosure, help.
 
-I build against it. I think it is mostly right.
+It is ten rules. The rest of this post argues with three of them,
+so here they are first, as the spec states them:
+
+| #   | Principle                        | Summary                                                                                |
+| --- | -------------------------------- | -------------------------------------------------------------------------------------- |
+| 1   | **Token-efficient output**       | Use TOON format for ~40% token savings over JSON                                         |
+| 2   | **Minimal default schemas**      | 3–4 fields per list item, not 10+                                                        |
+| 3   | **Content truncation**           | Truncate large text with size hints and a `--full` escape hatch                          |
+| 4   | **Pre-computed aggregates**      | Include aggregated counts and statuses that eliminate round trips                        |
+| 5   | **Definitive empty states**      | Explicit "0 results" rather than ambiguous empty output                                  |
+| 6   | **Structured errors & exit codes** | Idempotent mutations, structured errors, no interactive prompts, fail loud on unknown flags |
+| 7   | **Ambient context**              | Install opt-in session integrations first, then offer an on-demand skill                 |
+| 8   | **Content first**                | Running with no arguments shows live data, not help text                                 |
+| 9   | **Contextual disclosure**        | Include next-step suggestions after each output                                          |
+| 10  | **Consistent way to get help**   | Concise per-subcommand reference when agents need it                                     |
+
+<p style="font-size:0.875em;opacity:0.75">
+	Table from <a href="https://github.com/kunchenguid/axi#the-10-principles">the AXI README</a>.
+	Each rule has a full specification behind it; the summaries are enough to follow the argument.
+</p>
+
+Rules 1, 3 and 4 are the ones to hold on to — those are where the disagreement is.
+
+I build against all ten. I think they are mostly right.
 
 I also spent a day measuring it, and I want to argue that its headline rule
 is the least valuable thing in the document,
