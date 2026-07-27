@@ -36,10 +36,10 @@ so here they are first, as the spec states them:
 
 I build against all ten. I think they are mostly right.
 
-I also spent a day measuring them, and I came out building three of them
-differently from what the document says: TOON only for collections,
-command structure disclosed only at the node the agent is standing on,
-and next-step suggestions pruned by validity rather than relevance.
+I also spent a day measuring them, and I came away running my own variant
+of three: TOON only for collections, command structure disclosed only at the node
+the agent is standing on, and next-step suggestions pruned by validity
+rather than relevance.
 
 A departure only makes sense if you know what it departs *from*,
 so let me start with why the document is worth building against at all.
@@ -83,7 +83,7 @@ Every field you add to a default list schema is a tax on every list call the age
 So this is not a post about what AXI got wrong.
 It is a post about the rules that are newer than the others and still moving.
 
-## What I build: TOON for collections, plain keys for everything else
+## My variant: TOON for collections, plain keys for everything else
 
 Rule 1 — the front door — is a format mandate:
 use [TOON](https://toonformat.dev/) on stdout, roughly 40% cheaper than JSON.
@@ -241,7 +241,7 @@ cheaper, more readable, and already what the document shows.
 Ten rules, and two of them together pin down a boundary
 that neither of them states alone. That is a spec doing its job.
 
-## What I build: disclosure scoped to the node, never wider
+## My variant: disclosure scoped to the node, never wider
 
 The rules AXI has are good. The interesting question is what it has not reached yet.
 
@@ -453,7 +453,7 @@ So the rule is not "go flat" and it is not "one call to learn the surface."
 The enemy was **disclosure wider than the question**,
 whether that arrives as a mandatory tree walk or as a manifest nobody asked for.
 
-## What I build: suggestions pruned by validity, not relevance
+## My variant: suggestions pruned by validity, not relevance
 
 The previous section put the node's own verbs into the node's response.
 This one is about what happens to that block once the response
