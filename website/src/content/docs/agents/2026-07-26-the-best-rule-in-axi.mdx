@@ -37,7 +37,7 @@ so here they are first, as the spec states them:
 I build against all ten. I think they are mostly right.
 
 I also spent a day measuring them, and I came out with three proposals:
-scope rule 1 to collections, go flat on command structure and ship a manifest,
+scope rule 1 to collections, go flat on command structure and ship a filterable manifest,
 and prune rule 9's suggestions by validity rather than relevance.
 
 But the proposals only make sense if you know what they are proposals *against*,
@@ -240,7 +240,7 @@ cheaper, more readable, and already what the document shows.
 Ten rules, and two of them together pin down a boundary
 that neither of them states alone. That is a spec doing its job.
 
-## Proposal 2 — go flat, and make discovery one call
+## Proposal 2 — go flat, and make discovery cheap
 
 The rules AXI has are good. The interesting question is what it has not reached yet.
 
@@ -325,34 +325,70 @@ noun-first clusters them, which is the point of the prefix guidance above.
 tmux is inconsistent about this — `send-keys` but `list-panes` — and it is what people trip on.
 If you go flat, go noun-first and stay there: `pane-send-keys`, `pane-list`, `session-new`.
 
+### A manifest is not enough on its own
+
+The obvious answer is a manifest: ship `mytool schema`, print the whole surface
+in one call, and the tree walk goes away.
+
+That answer is half right, and the half it misses is the one MCP found first.
+
+Tool search solves two problems, not one. It stops definitions loading before
+the agent has read the request, and it returns roughly five matching tools
+rather than the catalogue. A manifest only solves the first.
+Print 170 commands in one call and you have moved the cost, not removed it:
+the agent is still choosing from 170 options, which is the number
+Anthropic's own guidance says selection accuracy does not survive.
+
+There is a third cost underneath both, and rule 4 does not name it.
+A round trip is transient — you pay for it once and it is behind you.
+Context is not. A manifest pulled on turn three is carried through turn forty,
+priced into every request the agent makes for the rest of the session.
+Optimising round trips while ignoring that is the same mistake
+as optimising a format's size while ignoring what it guarantees.
+
 ### The proposal
 
 **Flat, resource-prefixed command names.** No subcommand tree.
 An agent that learned `pane-list` can guess `session-list` and be right.
 
-**A one-shot surface manifest.** `--help` is a per-command lookup,
-and walking a tree with it costs a turn per node — but so does scrolling a flat wall of text.
-Ship `mytool schema` that prints the entire surface in one call —
-every command, its arguments, its flags with required ones marked, its exit codes:
+**A manifest the agent can filter before reading.**
+MCP had to build a search tool because a tool call cannot be piped.
+A CLI is invoked from a shell, and the agent driving it already has `grep`:
 
 ```
-$ mytool schema
-commands[4]{name,summary,args,flags,exit}:
+$ mytool schema | grep '^  pane-'
   pane-list,List panes,,--session --limit,0|2
   pane-view,Show one pane,<id>,--full --fields,0|1|2
   pane-send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
-  session-list,List sessions,,--limit,0|2
 ```
 
-Generated from the parser, so it cannot drift from what the CLI actually dispatches.
+Only what grep matched enters the context. The other 167 commands
+cost nothing — not in tokens, not in selection noise.
+That is what tool search does, with no new machinery.
 
-And deliberately *not* in the session-start hook.
+Which puts one requirement on the manifest, and it is the interesting part:
+**one command per line, name first.** A nested or pretty-printed manifest
+cannot be filtered this way. TOON's tabular form is line-oriented,
+so the format rule from the first proposal is what makes this one work.
+
+Generate it from the parser, so it cannot drift from what the CLI actually dispatches.
+Support `schema --find <query>` too, for agents without a shell —
+but the pipe is the primary, and it costs nothing to support.
+
+Then scale the mechanism to the surface.
+Under about thirty commands, skip `schema` entirely; `--help` prints everything
+for a few hundred tokens and there is nothing to filter.
+Above that, ship `schema`, mention it in the home view's hints,
+and document the pipe idiom there so the agent filters rather than swallows.
+
+Never in the session-start hook.
 Rule 7 is right, and the 55k-token number above is what ignoring it looks like.
-Mention `schema` in the home view's hints and let the agent pull it when it needs it.
 
-That is the whole rule: **one call to learn the surface, and never on a call the agent did not ask for.**
-Flat naming is what falls out of it below thirty-odd commands.
-Above that, keep the names flat and let `schema` — not `--help` — carry the disclosure.
+So the rule is not "one call to learn the surface."
+It is that the enemy was never levels — it was **mandatory levels of unknown depth**,
+each costing a round trip to learn nothing but names.
+An optional, filterable, self-describing index is still progressive disclosure.
+It is just the cheap kind.
 
 ## Proposal 3 — prune next steps by validity, not relevance
 
@@ -394,7 +430,7 @@ rule 4 tells you how to order it — biggest round-trip saving first:
 
 1. Aggregates and counts, definitive empty states, loud unknown-flag errors with the valid flags inline.
    These are the round-trip eliminations and they are the entire point.
-2. Command structure, flat, with a `schema` manifest.
+2. Command structure, flat, with a greppable `schema` manifest.
    This is the other forced round-trip, and it is one you pay on every new agent.
 3. Truncation with the size disclosed.
 4. Content-first home view, so a bare invocation shows state rather than a manual.
@@ -445,7 +481,7 @@ and every finding above exists because ten rules were concrete enough
 to point an encoder and a tokenizer at.
 
 Three proposals came out of the day: scope rule 1 to collections,
-go flat with a one-shot manifest, prune suggestions by validity.
+go flat with a filterable manifest, prune suggestions by validity.
 I am taking them upstream.
 Contributing to a spec that is mostly right seems like a better use of an afternoon
 than writing a competing one.
