@@ -1,0 +1,228 @@
+---
+title: HATEOAS was waiting for a client that could improvise
+pubDate: 2026-07-26
+---
+
+HATEOAS lost.
+
+If you have written a web API in the last decade,
+you wrote OpenAPI, or you wrote nothing and let the types speak.
+You did not make your responses carry links,
+and if you did, nobody followed them.
+
+Roy Fielding put hypermedia at the center of REST.
+The industry took the URLs and the verbs and left the rest on the table.
+
+I want to argue that we left it on the table for a good reason,
+that the reason has stopped being true,
+and that the thing we discarded is now one of the better ideas available
+for building tools that AI agents use.
+
+## Why it lost
+
+The pitch was appealing.
+A client bookmarks one URL.
+Every response tells it what it can do next.
+The server evolves its URL structure freely, because nothing is hardcoded.
+
+The problem was never the idea.
+The problem was the client.
+
+A hand-written client cannot do anything with a link relation it has not seen before.
+If your response hands me `rel: escalate` and I have never heard of escalating,
+my code does not grow a branch for it.
+I go read your documentation, I learn what escalating means,
+I write the branch, and — since I am already there — I hardcode the URL too.
+
+So runtime discovery bought a human developer nothing.
+It cost a layer of indirection, it bloated every payload,
+and it did not remove the need for out-of-band documentation.
+Three costs, no benefit.
+OpenAPI won because a static schema is what a static client actually wants.
+
+Notice the shape of that failure.
+HATEOAS presumed a client that could encounter an unfamiliar affordance
+and figure out what to do with it.
+No such client existed.
+
+## The client showed up
+
+An LLM agent can read `rel: escalate` next to a command
+and work out what escalating means and whether it wants to.
+It does not need a branch compiled in advance.
+That is the entire job description.
+
+This is not a small correction.
+It inverts the cost-benefit that killed hypermedia.
+The indirection HATEOAS asked us to pay for
+was only wasteful because the client could not use it.
+
+So I have been going back through the hypermedia constraints
+asking which ones earn their keep now.
+Most do not.
+One does, and it is not the one people quote.
+
+## The good part is omission
+
+When people summarize HATEOAS they say "responses include links."
+
+That is the packaging, not the idea.
+
+The idea is that a representation advertises the transitions
+that are legal **from the state it just reported**.
+A closed ticket's representation does not contain a `close` link.
+Not de-emphasized. Not marked disabled. Absent.
+
+Omission is the payload.
+
+I have been writing CLI tools for agents to drive,
+and the convention I had landed on — before thinking about any of this —
+was to append a few suggestions to each response:
+
+```
+tasks[3]{id,title,status}:
+  1,Fix auth bug,open
+  2,Add pagination,open
+  3,Update docs,closed
+help[2]:
+  Run `tasks view <id>` to see full details
+  Run `tasks create --title "..."` to add a task
+```
+
+That is useful. It saves the agent a `--help` round-trip.
+But it is *relevance*: here are some things you might plausibly want.
+
+Hypermedia offers something stronger, which is *validity*:
+here are the things that will actually work right now.
+
+```
+$ tasks view 42
+task:
+  number: 42
+  title: Fix auth bug
+  state: open
+  checks: 3/3 passed
+next[3]{rel,cmd}:
+  close,tasks close 42
+  comment,tasks comment 42 --body "<text>"
+  collection,tasks list --state open
+```
+
+```
+$ tasks close 42
+task: #42 closed
+next[2]{rel,cmd}:
+  reopen,tasks reopen 42
+  collection,tasks list --state open
+```
+
+`close` is gone from the second response.
+
+That difference is worth more than it looks.
+Relevance saves the agent a lookup.
+Validity saves it a *failed mutation* —
+a command run, an error returned, an error parsed, a retry composed.
+Four steps, and the last one re-enters the context window
+along with everything that preceded it.
+
+For an agent, the expensive thing is almost never a longer response.
+It is another turn.
+
+## Relations should be typed
+
+The second constraint worth taking is the `rel` vocabulary.
+
+`Run 'tasks view <id>' to see full details` is prose.
+An agent reads it correctly, most of the time,
+and "most of the time" is exactly the failure mode you cannot debug.
+
+`rel=retry` is a token match.
+
+A small stable vocabulary — `self`, `item`, `collection`, `next`, `create`, `edit`, `retry`,
+plus whatever your domain needs — gives an agent something deterministic to key on,
+and gives you something you can test.
+The same relation must mean the same thing in every command.
+That constraint is the whole value; a vocabulary that drifts per-endpoint is just prose with extra steps.
+
+## What to leave behind
+
+Take the semantics. Refuse the envelope.
+
+HAL and JSON:API wrapped every link in an object
+with `href` and `method` and `templated` and `title` and a nested `_links` bag.
+That was tolerable over HTTP because responses are cacheable
+and nobody was paying per byte to think about them.
+
+An agent's context is neither.
+Every one of those responses re-enters the context window on every call,
+and it re-enters *in full*, with no cache to amortize it.
+A hypermedia envelope that costs 200 tokens per response
+is a genuinely bad trade against the one round-trip it might save.
+
+Two columns. `rel` and `cmd`. Nothing else.
+
+I measured this on my own tooling recently and the affordance block
+lands around 25 tokens for three transitions.
+That is roughly a twentieth of what one avoided retry costs.
+Fine trade. A HAL envelope would not have been.
+
+## Where this bites back
+
+Two failure modes, and I do not think either is fatal, but both are real.
+
+**Agents are suggestible.**
+A complete-looking list of affordances reads as *the* action space.
+An agent handed three `next` entries may simply stop considering a fourth thing
+that was available all along and that you forgot to list.
+Prose hints do not have this problem as sharply,
+precisely because they are obviously partial.
+
+Which gives an uncomfortable rule:
+**if you are not certain a transition is illegal, list it.**
+A wrong omission hides a valid action, and the agent has no way to discover
+that you were the one who was wrong.
+Pruning is only safe where your state machine is genuinely authoritative.
+
+**Discovery is not the only mode.**
+An agent that already knows your tool does not want affordances.
+It has a goal, it knows the command, and every `next[]` block
+is pure overhead on the way there.
+
+I think the resolution is that these are two different clients wearing the same hat.
+Hypermedia optimizes *exploring*.
+A one-shot schema dump — every command, every flag, every exit code, one call —
+optimizes *executing*.
+
+Which, incidentally, is where pure HATEOAS overreached.
+It claimed you would not need out-of-band documentation.
+You do. You need both, for different phases,
+and the phases are distinguishable at runtime:
+an agent that has already pulled your schema will ignore your links,
+and that is correct behavior, not a bug in either mechanism.
+
+## The part I find funny
+
+The strongest argument for hypermedia was always
+that it decouples the client from the server's structure,
+so the server can evolve without breaking anyone.
+
+We rejected it because our clients could not exploit that freedom.
+
+Now the clients can, and the reason we want it has changed too.
+It is no longer mainly about being free to refactor our URLs.
+It is that every round-trip an agent takes to figure out what is possible
+is a round-trip it is not spending on the actual problem.
+
+Same constraint. Different justification. Better client.
+
+That happens more often than we admit —
+an idea gets filed as wrong when it was only early.
+
+---
+
+*The tool-design conventions I am comparing against here are AXI (Agent eXperience Interface),
+a set of ergonomic standards for CLIs that agents drive by shell execution.
+The token figures come from my own measurements rather than a published benchmark,
+and the claim that validity-pruning reduces failed mutations
+is reasoning I have not yet tested —
+it is measurable, though: count failed mutation attempts with and without a state-conditional `next` block.*

@@ -1,3 +1,10 @@
 {
-	"extends": ["github>unional/renovate-preset"]
+	"extends": ["github>unional/renovate-preset"],
+	"packageRules": [
+		{
+			"description": "TypeScript 7's native compiler does not expose the programmatic API `astro check` relies on, so `pnpm build` fails on it. Unpin once @astrojs/check supports it: https://github.com/withastro/roadmap/discussions/1321",
+			"matchPackageNames": ["typescript"],
+			"allowedVersions": "<7"
+		}
+	]
 }

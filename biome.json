@@ -1,8 +1,18 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
 	"extends": ["@repobuddy/biome"],
+	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
 	"files": {
-		"ignore": ["cjs", "coverage", "esm", "target"],
-		"include": ["*.mjs", "**/*.json"]
-	}
+		"includes": ["**/*.mjs", "**/*.json", "!**/cjs", "!**/coverage", "!**/esm", "!**/target"]
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.svg"],
+			"linter": { "rules": { "a11y": { "noSvgWithoutTitle": "off" } } }
+		},
+		{
+			"includes": [".research/**"],
+			"linter": { "rules": { "suspicious": { "noConsole": "off" } } }
+		}
+	]
 }

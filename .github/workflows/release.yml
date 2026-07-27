@@ -9,11 +9,11 @@ jobs:
     uses: unional/.github/.github/workflows/pnpm-verify.yml@main
     secrets: inherit
     with:
-      node-version: "[18]"
+      node-version: "[22]"
 
   docs:
     uses: unional/.github/.github/workflows/pnpm-docs.yml@main
     needs: code
     secrets: inherit
     with:
-      publish_dir: ./website/dist
+      publish-dir: ./website/dist
