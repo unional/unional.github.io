@@ -1,0 +1,8 @@
+[build]
+  base = "."
+  command = "corepack enable && pnpm run build"
+  publish = "website/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NETLIFY_USE_PNPM = "true"
