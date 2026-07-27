@@ -159,7 +159,38 @@ Rule 3 says detail views should include a truncated preview of long text, never 
 Rule 1 says put everything on stdout in TOON.
 Run both and you get a measurable answer about where the format boundary belongs.
 
-Measured on a seven-field task with one 190-character body:
+Here is the payload — a task detail view, seven fields,
+the last one a 188-character body of exactly the kind rule 3 exists for.
+In TOON, at 85 tokens:
+
+```
+task:
+  number: 42
+  title: Fix auth bug
+  state: open
+  assignee: alice
+  checks: 3/3 passed
+  comments: 7
+  body: "Users report intermittent 401s after token refresh. Repro: log in, wait 15 minutes, hit any authenticated endpoint. Suspect the refresh token is not being persisted before the retry fires."
+```
+
+And as plain markdown key-value, at 78:
+
+```
+## task
+number: 42
+title: Fix auth bug
+state: open
+assignee: alice
+checks: 3/3 passed
+comments: 7
+body: Users report intermittent 401s after token refresh. Repro: log in, wait 15 minutes, hit any authenticated endpoint. Suspect the refresh token is not being persisted before the retry fires.
+```
+
+Those are the same characters apart from one pair of quotes.
+That pair is most of the seven-token gap.
+
+Across six formats:
 
 | format       | tokens |
 | ------------ | -----: |
@@ -176,9 +207,12 @@ And this is not TOON underperforming — it is TOON being used outside the niche
 its own documentation claims.
 The format's README is explicit that compact JSON often wins
 where there is nothing tabular to factor, and a single object is exactly that case.
-TOON quotes any string containing a delimiter, the body contains `: `,
-so the whole body gets wrapped — and rule 3 guarantees
-every detail view in your CLI will contain such a body.
+
+Look at which field got quoted. Not `Fix auth bug`, not `3/3 passed` — only the body,
+because the body contains `Repro: ` and TOON quotes any string holding a delimiter.
+There is no tabular structure here for TOON's header to factor out,
+so the format contributes nothing but the escaping.
+And rule 3 guarantees every detail view in your CLI will carry a body like that one.
 
 Errors make the same point more sharply. A real TOON encoder produces:
 
