@@ -16,32 +16,32 @@ attempt I have seen at writing down what the difference is.
 It is ten rules. The rest of this post argues with three of them,
 so here they are first, as the spec states them:
 
-| #   | Principle                        | Summary                                                                                |
-| --- | -------------------------------- | -------------------------------------------------------------------------------------- |
-| 1   | **Token-efficient output**       | Use TOON format for ~40% token savings over JSON                                         |
-| 2   | **Minimal default schemas**      | 3–4 fields per list item, not 10+                                                        |
-| 3   | **Content truncation**           | Truncate large text with size hints and a `--full` escape hatch                          |
-| 4   | **Pre-computed aggregates**      | Include aggregated counts and statuses that eliminate round trips                        |
-| 5   | **Definitive empty states**      | Explicit "0 results" rather than ambiguous empty output                                  |
-| 6   | **Structured errors & exit codes** | Idempotent mutations, structured errors, no interactive prompts, fail loud on unknown flags |
-| 7   | **Ambient context**              | Install opt-in session integrations first, then offer an on-demand skill                 |
-| 8   | **Content first**                | Running with no arguments shows live data, not help text                                 |
-| 9   | **Contextual disclosure**        | Include next-step suggestions after each output                                          |
-| 10  | **Consistent way to get help**   | Concise per-subcommand reference when agents need it                                     |
+| #   | Principle                          | Summary                                                                                     |
+| --- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1   | **Token-efficient output**         | Use TOON format for ~40% token savings over JSON                                              |
+| 2   | **Minimal default schemas**        | 3–4 fields per list item, not 10+                                                             |
+| 3   | **Content truncation**             | Truncate large text with size hints and a `--full` escape hatch                               |
+| 4   | **Pre-computed aggregates**        | Include aggregated counts and statuses that eliminate round trips                             |
+| 5   | **Definitive empty states**        | Explicit "0 results" rather than ambiguous empty output                                       |
+| 6   | **Structured errors & exit codes** | Idempotent mutations, structured errors, no interactive prompts, fail loud on unknown flags   |
+| 7   | **Ambient context**                | Install opt-in session integrations first, then offer an on-demand skill                      |
+| 8   | **Content first**                  | Running with no arguments shows live data, not help text                                      |
+| 9   | **Contextual disclosure**          | Include next-step suggestions after each output                                               |
+| 10  | **Consistent way to get help**     | Concise per-subcommand reference when agents need it                                          |
 
 <p style="font-size:0.875em;opacity:0.75">
 	Table from <a href="https://github.com/kunchenguid/axi#the-10-principles">the AXI README</a>.
 	Each rule has a full specification behind it; the summaries are enough to follow the argument.
 </p>
 
-Rules 1, 3 and 4 are the ones to hold on to — those are where the disagreement is.
-
 I build against all ten. I think they are mostly right.
 
-I also spent a day measuring it, and I want to argue that its headline rule
-is the least valuable thing in the document,
-that two of its rules contradict each other,
-and that the gap it leaves open is somewhere else entirely.
+I also spent a day measuring them, and I came out with three proposals:
+scope rule 1 to collections, go flat on command structure and ship a manifest,
+and prune rule 9's suggestions by validity rather than relevance.
+
+But the proposals only make sense if you know what they are proposals *against*,
+so let me start with why the document is worth improving rather than replacing.
 
 ## What AXI gets right
 
@@ -69,8 +69,20 @@ Every one of those is a round-trip removed, and I have not found a better list a
 They are also the rules that survived contact with my own tooling unchanged,
 which is the strongest thing I can say about a spec.
 
+Two more things it gets right that are easy to miss.
+
+Rule 7 says ambient context must stay minimal — install a session integration,
+then offer the details as an on-demand skill rather than loading everything up front.
+That is the correct instinct, and it is going to matter a lot in the second proposal below.
+
+And rule 2 is stricter than it looks. Three to four fields per list item
+sounds like a style preference until you multiply it by row count and session length.
+Every field you add to a default list schema is a tax on every list call the agent makes.
+
 So this is not a post about what AXI got wrong.
-It is a post about the one rule that is newer than the others and still moving.
+It is a post about the rules that are newer than the others and still moving.
+
+## Proposal 1 — scope rule 1 to collections
 
 Rule 1 — the front door — is a format mandate:
 use [TOON](https://toonformat.dev/) on stdout, roughly 40% cheaper than JSON.
@@ -78,11 +90,6 @@ It is a good rule with a real number behind it.
 It is also the rule with the most headroom,
 because the number comes from benchmarks built for a different shape of data than a CLI emits,
 and nobody has checked what happens when you point it at ours.
-
-That seemed worth checking. Sharpening one rule is a cheap way to improve a spec
-that is otherwise in good shape.
-
-## So I measured it
 
 The published TOON benchmarks are good work.
 Thirteen datasets, 244 generated questions, four models, confidence intervals reported,
@@ -95,6 +102,8 @@ A CLI emits fifteen rows. Then a single object. Then a two-line error.
 Then fifteen rows again, forty times in a session.
 
 So I ran it myself, with the real encoder and the same tokenizer family the official suite uses.
+
+### Collections: the rule holds
 
 The first question was whether TOON's advantage survives small payloads,
 since its tabular header costs a fixed twelve tokens
@@ -115,11 +124,11 @@ So the rule is safe at CLI sizes. Good.
 
 Two other columns were more interesting.
 
-| TOON vs                                 |  N=3   |  N=15  | N=1000 |
-| --------------------------------------- | ------ | ------ | ------ |
-| Markdown table                          | −16.4% | −8.3%  | −5.5%  |
+| TOON vs                               |  N=3   |  N=15  | N=1000 |
+| ------------------------------------- | ------ | ------ | ------ |
+| Markdown table                        | −16.4% | −8.3%  | −5.5%  |
 | Markdown list — `- #1 Fix auth — open` | +39.4% | +8.8%  | +2.4%  |
-| CSV                                     | +31.4% | +21.5% | +19.2% |
+| CSV                                   | +31.4% | +21.5% | +19.2% |
 
 A plain markdown bullet list is cheaper than TOON at *every* size I tested.
 Not close at three rows — 39% cheaper.
@@ -141,7 +150,7 @@ That is a stronger case than compression, and it is the one I would put in the t
 Compression is a nice side effect that happens to be smaller than advertised
 against the formats nobody thought to compare with.
 
-## Rule 3 points at where rule 1 should stop
+### Single objects: rule 3 says where rule 1 should stop
 
 The nicest thing about a spec with ten specific rules
 is that the rules can be checked against each other.
@@ -171,7 +180,6 @@ TOON quotes any string containing a delimiter, the body contains `: `,
 so the whole body gets wrapped — and rule 3 guarantees
 every detail view in your CLI will contain such a body.
 
-So the two rules together tell you where the boundary is.
 Errors make the same point more sharply. A real TOON encoder produces:
 
 ```
@@ -190,8 +198,7 @@ Whoever wrote those examples had the right instinct.
 The text simply has not caught up with them yet,
 which makes this the easiest possible improvement to land.
 
-So the first proposal is small and costs nothing:
-scope rule 1 to collections.
+**The proposal.** Scope rule 1 to collections.
 Use TOON's tabular form for lists, where it earns 25–38% and hands you the row count.
 For single objects, errors, and empty states, use plain `key: value` —
 cheaper, more readable, and already what the document shows.
@@ -199,11 +206,11 @@ cheaper, more readable, and already what the document shows.
 Ten rules, and two of them together pin down a boundary
 that neither of them states alone. That is a spec doing its job.
 
-## The biggest opportunity is command structure
+## Proposal 2 — go flat, and make discovery one call
 
 The rules AXI has are good. The interesting question is what it has not reached yet.
 
-Command structure, as far as I can tell, is the big one.
+Command structure is the big one.
 
 Rule 6 mentions grouped nouns in passing —
 "only the subcommand layer knows which is in play" — while validating flags,
@@ -218,51 +225,130 @@ to find out what exists. `mytool --help`, then `mytool tasks --help`,
 then `mytool tasks list --help`.
 Three turns before it has run anything.
 
-The nearest measurement I found is ETOM, a five-level benchmark
+### The obvious fix is flat, and the obvious argument for it is wrong
+
+`mytool send-keys` instead of `mytool send keys`.
+One `--help`, the whole surface, no tree to walk.
+It is also what MCP does — a flat list of tools, no nesting, every definition disclosed up front —
+and MCP is the most widely deployed agent-facing interface there is.
+
+I believed this argument for about an hour. It does not survive checking.
+
+MCP is the natural experiment in "flat, disclose everything at once,"
+and the published result is that it breaks. From Anthropic's tool search documentation:
+
+> A typical multiserver setup (GitHub, Slack, Sentry, Grafana, and Splunk) can consume
+> ~55k tokens in definitions before Claude does any work.
+
+> Claude's ability to pick the right tool degrades once you exceed 30–50 available tools.
+
+Their threshold for "stop disclosing up front" is **ten tools**.
+The fix that shipped was deferred loading plus search over the catalogue —
+which is to say, MCP spent a year discovering that dumping your entire surface
+into the context on every request is not free.
+
+So "be like MCP" is advice to reproduce a failure mode that MCP itself has already retreated from.
+It also contradicts rule 7, which is right that ambient context must stay minimal.
+A 170-command `--help` is ambient context by another name.
+
+The nearest independent measurement I found is ETOM, a five-level benchmark
 for tool orchestration across MCP namespaces.
 Accuracy declines with namespace depth *and* with breadth, and the two compound.
 That is tool namespaces rather than subcommand trees, so it is an analogy —
-but it points the same direction as every practitioner writeup I read.
+but it points the same direction, and it is the reason flat-and-huge is not a free win.
 
-So, two proposals.
+### What survived
 
-**Shallow groups.**
-`noun verb` — `tasks list`, `tasks create`.
-Two levels is the target, three is the ceiling.
-Prefer a flag over a level: if a third level only selects among variants of one action,
-it is a flag, and `tasks list --archived` beats `tasks archived list`.
-Keep verbs consistent across nouns, so an agent that learned `tasks list`
-can guess `labels list` and be right.
-Watch breadth too — if one noun has more than a dozen verbs, it is two nouns.
+Here is the part worth keeping. MCP's fix was not nesting.
+It was flat names plus on-demand loading, with this guidance on naming:
 
-**A one-shot surface manifest.**
-`--help` is a per-command lookup, and walking a tree with it costs a turn per node.
+> Use consistent namespacing in tool names: prefix by service or resource
+> (for example, `github_`, `slack_`) so one search matches the whole group.
+
+Flat names, resource-prefixed, discovered on demand rather than walked.
+That is the shape, and it maps cleanly onto a CLI.
+
+Which means the real variable was never flat versus nested.
+It is **forced progressive discovery** versus **one-call discovery**.
+Nesting only costs turns if there is no way to see the surface in one shot.
+Flatness only helps if the flat list does not itself become the context problem.
+
+Two things do genuinely favour flat once discovery is handled separately:
+
+- **Flag scope stops being ambiguous.** Rule 6's complaint that
+  "only the subcommand layer knows which is in play" is a problem that only exists
+  because there are layers. Flat deletes it rather than specifying around it.
+- **It matches what you are wrapping.** tmux is flat — `send-keys`, `new-session`, `list-panes`.
+  A wrapper that regroups those into a tree makes the agent hold two mental models
+  of the same surface for no gain.
+
+One caveat on naming, and it is not cosmetic.
+Verb-first names scatter related commands across an alphabetical `--help`;
+noun-first clusters them, which is the entire point of the prefix guidance above.
+tmux is inconsistent here — `send-keys` but `list-panes` — and it is the thing people trip on.
+If you go flat, go noun-first and stay there: `pane-send-keys`, `pane-list`, `session-new`.
+
+### The proposal
+
+**Flat, resource-prefixed command names.** No subcommand tree.
+An agent that learned `pane-list` can guess `session-list` and be right.
+
+**A one-shot surface manifest.** `--help` is a per-command lookup,
+and walking a tree with it costs a turn per node — but so does scrolling a flat wall of text.
 Ship `mytool schema` that prints the entire surface in one call —
-every command path, its arguments, its flags with required ones marked, its exit codes:
+every command, its arguments, its flags with required ones marked, its exit codes:
 
 ```
 $ mytool schema
-commands[4]{path,summary,args,flags,exit}:
-  tasks list,List tasks,,--state --assignee --limit,0|2
-  tasks view,Show one task,<id>,--full --fields,0|1|2
-  tasks create,Create a task,,--title* --body,0|2
-  labels list,List labels,,--limit,0|2
+commands[4]{name,summary,args,flags,exit}:
+  pane-list,List panes,,--session --limit,0|2
+  pane-view,Show one pane,<id>,--full --fields,0|1|2
+  pane-send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
+  session-list,List sessions,,--limit,0|2
 ```
 
 Generated from the parser, so it cannot drift from what the CLI actually dispatches.
-And deliberately *not* in the session-start hook —
-AXI rule 7 is right that ambient context must stay minimal,
-and tool definitions bloating past 50,000 tokens before an agent reads the request
-is already a documented failure mode elsewhere.
-Mention it in the home view's hints and let the agent pull it when it needs it.
 
-There is a third proposal, about rule 9,
-which turned out to be an argument about hypermedia and deserved
-[its own post](/architecture/2026-07-26-hateoas-was-waiting-for-agents/).
-Short version: rule 9 suggests next commands by *relevance*,
-and it should prune them by *validity* —
-a closed task's response should not offer to close it.
-That saves a failed mutation rather than a help lookup.
+And deliberately *not* in the session-start hook.
+Rule 7 is right, and the 55k-token number above is what ignoring it looks like.
+Mention `schema` in the home view's hints and let the agent pull it when it needs it.
+
+That is the whole rule: **one call to learn the surface, and never on a call the agent did not ask for.**
+Flat naming is what falls out of it below thirty-odd commands.
+Above that, keep the names flat and let `schema` — not `--help` — carry the disclosure.
+
+## Proposal 3 — prune next steps by validity, not relevance
+
+Rule 9 says to include next-step suggestions after each output. It is a good rule,
+and it is the one that turned out to be about something bigger than I expected.
+
+The suggestion mechanism AXI describes ranks candidates by *relevance*:
+after listing tasks, offer the things one commonly does with a task.
+What it should do is filter them by *validity*:
+offer only the commands that will actually succeed against the object just returned.
+
+A closed task's response should not offer to close it.
+A pane that is already dead should not come back with `pane-send-keys` in its hints.
+
+The difference matters because of what each one saves.
+An irrelevant-but-valid suggestion costs the agent a moment of ranking.
+An invalid suggestion costs a *failed mutation* —
+an invocation, an error, a re-read, and a recovery plan.
+That is the expensive kind of round-trip, the one rule 4 is named after,
+and it is the only place in the spec where a suggestion can actively create one.
+
+Validity is also something the server already knows and the agent does not.
+You have the task's state in hand when you render the response.
+The agent has to infer it from fields you chose to include.
+Handing over a pruned list is free for you and unguessable for it.
+
+This turned out to be an argument about hypermedia rather than about CLIs,
+and it got [its own post](/agents/2026-07-26-hateoas-was-waiting-for-agents/) —
+the short version is that this is the HATEOAS constraint,
+that it failed for twenty years because no client could improvise against an unfamiliar link,
+and that an LLM is exactly the client it was waiting for.
+
+Fair warning: unlike the first proposal, this one is reasoning rather than data.
 
 ## What I would tell someone adopting AXI
 
@@ -271,9 +357,11 @@ rule 4 tells you how to order it — biggest round-trip saving first:
 
 1. Aggregates and counts, definitive empty states, loud unknown-flag errors with the valid flags inline.
    These are the round-trip eliminations and they are the entire point.
-2. Truncation with the size disclosed.
-3. Content-first home view, so a bare invocation shows state rather than a manual.
-4. Then the output format.
+2. Command structure, flat, with a `schema` manifest.
+   This is the other forced round-trip, and it is one you pay on every new agent.
+3. Truncation with the size disclosed.
+4. Content-first home view, so a bare invocation shows state rather than a manual.
+5. Then the output format.
 
 The format still matters — over forty calls in one session, TOON saved me
 1,845 tokens against compact JSON and 7,145 against pretty JSON,
@@ -303,7 +391,11 @@ with the *most* redundant formats winning on retrieval.
 I also used a GPT tokenizer rather than a Claude one.
 The ordering should transfer. The absolute numbers will not.
 
-And the validity-pruning claim in the other post is reasoning, not data.
+The flat-versus-nested argument leans on MCP's published thresholds
+rather than on a CLI experiment. The failure mode is documented;
+that the same numbers land in the same places for subcommands is inference.
+
+And the validity-pruning claim is reasoning, not data.
 It is testable — count failed mutation attempts with and without it —
 and I have not done it yet.
 
@@ -316,7 +408,7 @@ and every finding above exists because ten rules were concrete enough
 to point an encoder and a tokenizer at.
 
 Three proposals came out of the day: scope rule 1 to collections,
-add shallow command groups, add a one-shot surface manifest.
+go flat with a one-shot manifest, prune suggestions by validity.
 I am taking them upstream.
 Contributing to a spec that is mostly right seems like a better use of an afternoon
 than writing a competing one.
