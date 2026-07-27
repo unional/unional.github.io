@@ -37,7 +37,7 @@ so here they are first, as the spec states them:
 I build against all ten. I think they are mostly right.
 
 I also spent a day measuring them, and I came out with three proposals:
-scope rule 1 to collections, go flat on command structure and ship a filterable manifest,
+scope rule 1 to collections, shallow groups whose responses carry their own map,
 and prune rule 9's suggestions by validity rather than relevance.
 
 But the proposals only make sense if you know what they are proposals *against*,
@@ -240,7 +240,7 @@ cheaper, more readable, and already what the document shows.
 Ten rules, and two of them together pin down a boundary
 that neither of them states alone. That is a spec doing its job.
 
-## Proposal 2 — go flat, and make discovery cheap
+## Proposal 2 — shallow groups, and responses that carry their own map
 
 The rules AXI has are good. The interesting question is what it has not reached yet.
 
@@ -259,8 +259,9 @@ to find out what exists. `mytool --help`, then `mytool tasks --help`,
 then `mytool tasks list --help`.
 Three turns before it has run anything.
 
-### Flat commands, and the MCP argument for them
+### The flat answer, and the MCP argument for it
 
+The obvious fix is to delete the levels.
 `mytool send-keys` instead of `mytool send keys`.
 One `--help`, the whole surface, no tree to walk.
 It is also what MCP does — a flat list of tools, no nesting, every definition disclosed up front —
@@ -300,35 +301,15 @@ It was flat names plus on-demand loading, with this guidance on naming:
 > (for example, `github_`, `slack_`) so one search matches the whole group.
 
 Flat names, resource-prefixed, discovered on demand rather than walked.
-That is the shape, and it maps cleanly onto a CLI.
 
-Which means the real variable was never flat versus nested.
-It is **forced progressive discovery** versus **one-call discovery**.
-Nesting only costs turns if there is no way to see the surface in one shot.
+Which is worth sitting with, because it says the real variable was never flat versus nested.
+It is **forced progressive discovery** versus **discovery you can pay for once**.
+Nesting only costs turns if there is no way to see the surface without walking it.
 Flatness only helps if the flat list does not itself become the context problem.
-
-Two things still favour flat once discovery is handled separately.
-
-**Flag scope stops being ambiguous.**
-Rule 6's complaint that "only the subcommand layer knows which is in play"
-is a problem that exists because there are layers.
-Flat deletes it rather than specifying around it.
-
-**It matches what you are wrapping.**
-tmux is flat — `send-keys`, `new-session`, `list-panes`.
-A wrapper that regroups those into a tree makes the agent hold
-two mental models of the same surface for no gain.
-
-Naming matters more here than it looks.
-Verb-first names scatter related commands across an alphabetical `--help`;
-noun-first clusters them, which is the point of the prefix guidance above.
-tmux is inconsistent about this — `send-keys` but `list-panes` — and it is what people trip on.
-If you go flat, go noun-first and stay there: `pane-send-keys`, `pane-list`, `session-new`.
 
 ### A manifest is not enough on its own
 
-The obvious answer is a manifest: ship `mytool schema`, print the whole surface
-in one call, and the tree walk goes away.
+So ship a manifest. `mytool schema`, the whole surface in one call, tree walk gone.
 
 That answer is half right, and the half it misses is the one MCP found first.
 
@@ -346,14 +327,8 @@ priced into every request the agent makes for the rest of the session.
 Optimising round trips while ignoring that is the same mistake
 as optimising a format's size while ignoring what it guarantees.
 
-### The proposal
-
-**Flat, resource-prefixed command names.** No subcommand tree.
-An agent that learned `pane-list` can guess `session-list` and be right.
-
-**A manifest the agent can filter before reading.**
-MCP had to build a search tool because a tool call cannot be piped.
-A CLI is invoked from a shell, and the agent driving it already has `grep`:
+You can hand the filtering back to the agent, and a CLI has a mechanism MCP does not:
+it runs in a shell, and the agent driving it already has `grep`.
 
 ```
 $ mytool schema | grep '^  pane-'
@@ -362,35 +337,119 @@ $ mytool schema | grep '^  pane-'
   pane-send-keys,Send keys to a pane,<id> <keys>,--literal,0|1|2
 ```
 
-Only what grep matched enters the context. The other 167 commands
-cost nothing — not in tokens, not in selection noise.
-That is what tool search does, with no new machinery.
+Only what grep matched enters the context. That is tool search, with no new machinery,
+and it puts one requirement on the manifest worth stating:
+**one command per line, name first.** A nested or pretty-printed manifest cannot be
+filtered this way, so the format rule from the first proposal is what makes this work.
 
-Which puts one requirement on the manifest, and it is the interesting part:
-**one command per line, name first.** A nested or pretty-printed manifest
-cannot be filtered this way. TOON's tabular form is line-oriented,
-so the format rule from the first proposal is what makes this one work.
+But notice what that idiom costs. It needs a shell,
+it needs the agent to know the output is line-oriented,
+and a pattern that is slightly wrong returns nothing and buys a retry.
+It has to be taught in the output before it can be used.
+`mytool pane --help` needs none of that — every agent that has used any CLI
+already knows a subcommand takes `--help`.
 
-Generate it from the parser, so it cannot drift from what the CLI actually dispatches.
-Support `schema --find <query>` too, for agents without a shell —
-but the pipe is the primary, and it costs nothing to support.
+A bespoke idiom is a bet that the agent reads a hint and applies it correctly.
+A subcommand is not a bet.
 
-Then scale the mechanism to the surface.
-Under about thirty commands, skip `schema` entirely; `--help` prints everything
-for a few hundred tokens and there is nothing to filter.
-Above that, ship `schema`, mention it in the home view's hints,
-and document the pipe idiom there so the agent filters rather than swallows.
+### Rule 8 is what pays for the walk
 
-Never in the session-start hook.
+Which brings the argument back to where it started, from the other side.
+
+Rule 8 says a bare invocation shows live data rather than a usage manual.
+Apply it at *every* node, not just the root.
+`mytool pane` does not print help for the pane group — it lists your panes.
+
+That is clearly right, and on its own it makes the discovery problem worse.
+The agent now gets data it did not ask for and still does not know
+which verbs exist at that level, so it spends the `--help` call anyway.
+
+Unless the response carries them. Rule 9 already says outputs should suggest next steps.
+Point that mechanism at the node's own command list and the extra call disappears:
+
+```
+$ mytool pane
+panes[4]{id,title,cmd,active}:
+  1,editor,nvim,true
+  2,server,pnpm dev,false
+  3,tests,vitest --watch,false
+  4,shell,zsh,false
+commands[5]{name,args}:
+  pane-view,<id>
+  pane-send-keys,<id> <keys>
+  pane-kill,<id>
+  pane-resize,<id> <cols> <rows>
+  pane-split,<id> --horizontal|--vertical
+```
+
+The command block costs 58 tokens on a 52-token response.
+The `pane --help` it replaces costs 126 tokens *and* a round trip —
+call that 600, and the fold pays for itself unless the agent
+returns to the same bare node a dozen times in one session.
+Orienting takes one visit, sometimes three.
+
+Two details decide whether it stays cheap.
+
+**Names and required arguments, not signatures.**
+Names alone are 24 tokens but do not tell the agent how to invoke anything,
+so it buys the help call back. Full signatures are 127 and duplicate `schema`.
+Names with required arguments are enough to act on;
+optional flags stay where they were.
+
+**Navigational responses only.**
+`mytool pane` carries the map because the agent is orienting.
+`mytool pane list` does not — it asked a specific question and got an answer.
+Attach the block to the bare node, not to every command in the tool.
+
+What that does to rule 10 is worth saying out loud.
+Per-subcommand `--help` stops being the agent's discovery path
+and becomes what it always was for humans: a reference, and a fallback.
+Rules 8, 9 and 10 stop being three separate obligations
+and become one: every response carries the state *and* the affordances that state permits.
+
+Which is the hypermedia constraint, arrived at from the direction of token accounting
+rather than from REST. More on that in the third proposal.
+
+### The proposal
+
+**Shallow groups.** `noun verb` — `pane list`, `pane send-keys`.
+Flat is right below roughly thirty commands, where one `--help` prints
+the whole surface for a few hundred tokens and there is nothing to segregate.
+Past that you need segregation, and a subcommand tree is what segregation is.
+Two levels is the target and three is the ceiling.
+Prefer a flag over a level: if a third level only selects among variants of one action,
+it is a flag, and `pane list --dead` beats `pane dead list`.
+Keep verbs consistent across nouns, so an agent that learned `pane list`
+can guess `session list` and be right.
+
+**Live data at every node, with the node's commands attached.**
+Rule 8 at each level, rule 9 carrying the level's own verbs,
+names and required arguments only, on bare nodes only.
+The walk still happens; it just stops being a walk that returns nothing.
+
+**A manifest for everything the walk does not cover.**
+`mytool schema` prints the entire surface in one call — every command,
+its arguments, its flags with required ones marked, its exit codes.
+Generated from the parser, so it cannot drift from what the CLI dispatches.
+Line-oriented and name-first, so `| grep` works, with `schema --find <query>`
+for agents that have no shell.
+It is the bulk path — cold-start scans, scripting, agents that would rather
+filter than walk — not the primary route, which is now the walk itself.
+
+And never in the session-start hook.
 Rule 7 is right, and the 55k-token number above is what ignoring it looks like.
+Mention `schema` in the home view's hints and let the agent pull it when it needs it.
 
-So the rule is not "one call to learn the surface."
-It is that the enemy was never levels — it was **mandatory levels of unknown depth**,
-each costing a round trip to learn nothing but names.
-An optional, filterable, self-describing index is still progressive disclosure.
-It is just the cheap kind.
+So the rule is not "go flat" and it is not "one call to learn the surface."
+The enemy was **mandatory levels of unknown depth,
+each costing a round trip to learn nothing but names.**
+Fix the second half of that sentence and the levels stop mattering.
 
 ## Proposal 3 — prune next steps by validity, not relevance
+
+The previous proposal put the node's own verbs into the node's response.
+This one is about what happens to that block once the response
+is about a specific object rather than a level.
 
 Rule 9 says to include next-step suggestions after each output. It is a good rule,
 and it is the one with the least written underneath it.
@@ -430,8 +489,9 @@ rule 4 tells you how to order it — biggest round-trip saving first:
 
 1. Aggregates and counts, definitive empty states, loud unknown-flag errors with the valid flags inline.
    These are the round-trip eliminations and they are the entire point.
-2. Command structure, flat, with a greppable `schema` manifest.
-   This is the other forced round-trip, and it is one you pay on every new agent.
+2. Command structure: shallow groups, live data at every node, and the node's own
+   verbs attached to it. This is the other forced round-trip, and you pay it on every
+   agent that has not met your tool before.
 3. Truncation with the size disclosed.
 4. Content-first home view, so a bare invocation shows state rather than a manual.
 5. Then the output format.
@@ -464,9 +524,16 @@ with the *most* redundant formats winning on retrieval.
 I also used a GPT tokenizer rather than a Claude one.
 The ordering should transfer. The absolute numbers will not.
 
-The flat-versus-nested argument leans on MCP's published thresholds
+The command-structure argument leans on MCP's published thresholds
 rather than on a CLI experiment. The failure mode is documented;
 that the same numbers land in the same places for subcommands is inference.
+
+The case for folding a node's verbs into its response is a token count
+against an assumed price for a round trip. Six hundred is a reasonable figure
+and it is not a measured one. The fold wins by an order of magnitude at that price,
+so it would take a very wrong assumption to flip it — but it is an assumption.
+What I have not tested at all is whether an agent given the block actually uses it
+instead of reaching for `--help` out of habit.
 
 And the validity-pruning claim is reasoning, not data.
 It is testable — count failed mutation attempts with and without it —
@@ -481,7 +548,7 @@ and every finding above exists because ten rules were concrete enough
 to point an encoder and a tokenizer at.
 
 Three proposals came out of the day: scope rule 1 to collections,
-go flat with a filterable manifest, prune suggestions by validity.
+shallow groups with self-describing nodes, prune suggestions by validity.
 I am taking them upstream.
 Contributing to a spec that is mostly right seems like a better use of an afternoon
 than writing a competing one.
